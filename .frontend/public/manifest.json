@@ -1,1 +1,89 @@
 horizon-core/frontend/public/manifest.json
+{
+  // ============================================================
+  // Full app name – shown on home screen and app menus
+  // ============================================================
+  "name": "Horizon Store – Official Beaconchain Store",
+
+  // ============================================================
+  // Short name – used when there isn't enough space for the full name
+  // ============================================================
+  "short_name": "Horizon Store",
+
+  // ============================================================
+  // Brief description – for search engines and users
+  // ============================================================
+  "description": "Merkle‑verified licenses, ads & services with crypto payments – 100K+ validators support",
+
+  // ============================================================
+  // Entry point – usually the main page
+  // ============================================================
+  "start_url": "/",
+
+  // ============================================================
+  // Display mode: standalone = native app feel (no browser UI)
+  // ============================================================
+  "display": "standalone",
+
+  // ============================================================
+  // Screen orientation: portrait (vertical) or landscape
+  // ============================================================
+  "orientation": "portrait",
+
+  // ============================================================
+  // Background color – shown during loading / splash screen
+  // ============================================================
+  "background_color": "#0a0c18",
+
+  // ============================================================
+  // Theme color – status bar (mobile) and toolbar (desktop)
+  // ============================================================
+  "theme_color": "#0a0f1e",
+
+  // ============================================================
+  // App category – used in app stores (optional)
+  // ============================================================
+  "categories": ["blockchain", "finance", "monitoring", "ethereum", "store"],
+
+  // ============================================================
+  // Icons in multiple sizes for different devices
+  // ============================================================
+  "icons": [
+    {
+      "src": "/assets/icons/icon-48.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
