@@ -2,131 +2,956 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Horizon Store – فروش لایسنس، آگهی و خدمات با ارز دیجیتال">
-    <meta name="theme-color" content="#0a0f1e">
-    <meta name="author" content="Mahdi Amolimoghaddam">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' http://localhost:3500 http://localhost:8080; img-src 'self' data: https:; frame-src 'none';">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horizon Store | فروشگاه رسمی Beaconchain</title>
-
-    <!-- ===== Fonts & Icons ===== -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           RESET & BASE
+        ============================================================ */
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'Inter',sans-serif;
+            background:#f8fafc;
+            color:#0f172a;
+            direction:rtl;
+            line-height:1.6;
+        }
+        .container { max-width:1440px; margin:0 auto; padding:0 1.5rem; }
 
-    <!-- ===== PWA Manifest ===== -->
-    <link rel="manifest" href="/manifest.json">
+        /* ============================================================
+           HEADER
+        ============================================================ */
+        .header {
+            background:rgba(255,255,255,0.98);
+            backdrop-filter:blur(8px);
+            border-bottom:1px solid #e2e8f0;
+            padding:0.6rem 0;
+            position:sticky;
+            top:0;
+            z-index:100;
+        }
+        .header-inner {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            flex-wrap:wrap;
+            gap:0.8rem;
+        }
+        .logo {
+            font-size:1.4rem;
+            font-weight:900;
+            background:linear-gradient(135deg,#0f172a,#2563eb);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            display:flex;
+            align-items:center;
+            gap:0.5rem;
+        }
+        .logo i { color:#2563eb; font-size:1.6rem; }
+        .logo span { font-size:0.65rem; font-weight:400; color:#64748b; display:block; }
 
-    <!-- ===== Custom CSS ===== -->
-    <link rel="stylesheet" href="/src/css/style.css">
+        .search-bar {
+            flex:1;
+            min-width:200px;
+            display:flex;
+            gap:0.5rem;
+            background:#f1f5f9;
+            border-radius:2rem;
+            padding:0.2rem 0.2rem 0.2rem 0.8rem;
+        }
+        .search-bar input {
+            flex:1;
+            padding:0.4rem 0.5rem;
+            border:none;
+            background:transparent;
+            font-size:0.8rem;
+            outline:none;
+            color:#0f172a;
+        }
+        .search-bar button {
+            background:#2563eb;
+            border:none;
+            padding:0.4rem 1.2rem;
+            border-radius:2rem;
+            color:#fff;
+            cursor:pointer;
+            font-size:0.8rem;
+            transition:0.2s;
+        }
+        .search-bar button:hover { background:#1d4ed8; }
+
+        /* ============================================================
+           TICKER (قیمت‌های لحظه‌ای)
+        ============================================================ */
+        .ticker-bar {
+            background:#0f172a;
+            color:#94a3b8;
+            padding:0.3rem 0;
+            overflow:hidden;
+            white-space:nowrap;
+            font-size:0.75rem;
+        }
+        .ticker-track {
+            display:inline-block;
+            animation:tickerScroll 25s linear infinite;
+        }
+        .ticker-track span { display:inline-block; margin:0 1.2rem; }
+        .ticker-track .val { color:#facc15; font-weight:700; }
+        .ticker-track .green { color:#22c55e; }
+        .ticker-track .red { color:#ef4444; }
+        @keyframes tickerScroll {
+            0% { transform:translateX(0); }
+            100% { transform:translateX(-50%); }
+        }
+
+        /* ============================================================
+           MARKET OVERVIEW
+        ============================================================ */
+        .market-overview {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+            gap:0.8rem;
+            margin:1.2rem 0;
+            background:#fff;
+            border-radius:1.2rem;
+            padding:1rem 1.2rem;
+            border:1px solid #e2e8f0;
+            box-shadow:0 2px 8px rgba(0,0,0,0.04);
+        }
+        .market-item {
+            text-align:center;
+            padding:0.3rem;
+        }
+        .market-item .label {
+            font-size:0.6rem;
+            color:#64748b;
+            text-transform:uppercase;
+            letter-spacing:0.5px;
+        }
+        .market-item .value {
+            font-size:1.1rem;
+            font-weight:700;
+            color:#0f172a;
+        }
+        .market-item .change {
+            font-size:0.7rem;
+            font-weight:600;
+        }
+        .market-item .change.green { color:#22c55e; }
+        .market-item .change.red { color:#ef4444; }
+
+        /* ============================================================
+           HERO (بنر تبلیغاتی)
+        ============================================================ */
+        .hero {
+            background:linear-gradient(135deg,#0f172a,#1e293b);
+            border-radius:1.5rem;
+            padding:2rem 1.5rem;
+            margin-bottom:2rem;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            flex-wrap:wrap;
+            gap:1.5rem;
+            position:relative;
+            overflow:hidden;
+        }
+        .hero::before {
+            content:'';
+            position:absolute;
+            top:-50%;
+            right:-20%;
+            width:60%;
+            height:200%;
+            background:radial-gradient(circle,rgba(37,99,235,0.08),transparent 70%);
+            animation:heroGlow 6s ease-in-out infinite alternate;
+        }
+        @keyframes heroGlow {
+            0% { transform:scale(1); opacity:0.5; }
+            100% { transform:scale(1.2); opacity:1; }
+        }
+        .hero-content { position:relative; z-index:2; color:#fff; }
+        .hero-content h1 {
+            font-size:1.8rem;
+            font-weight:900;
+            background:linear-gradient(135deg,#facc15,#38bdf8);
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+        }
+        .hero-content p { color:#94a3b8; margin:0.3rem 0; font-size:0.9rem; }
+        .hero-content .btn { margin-top:0.8rem; }
+        .hero-img { font-size:3.5rem; position:relative; z-index:2; }
+
+        /* ============================================================
+           BUTTONS
+        ============================================================ */
+        .btn {
+            padding:0.5rem 1.4rem;
+            border:none;
+            border-radius:2rem;
+            font-weight:600;
+            font-size:0.8rem;
+            cursor:pointer;
+            transition:0.2s;
+            display:inline-flex;
+            align-items:center;
+            gap:0.4rem;
+        }
+        .btn-primary {
+            background:linear-gradient(135deg,#2563eb,#7c6bff);
+            color:#fff;
+        }
+        .btn-primary:hover {
+            transform:scale(1.03);
+            box-shadow:0 4px 16px rgba(37,99,235,0.3);
+        }
+        .btn-outline {
+            background:transparent;
+            border:1px solid #e2e8f0;
+            color:#1e293b;
+        }
+        .btn-outline:hover { background:#f1f5f9; }
+
+        /* ============================================================
+           SECTION TITLE
+        ============================================================ */
+        .section-title {
+            font-size:1.2rem;
+            font-weight:800;
+            margin:1.8rem 0 1rem;
+            display:flex;
+            align-items:center;
+            gap:0.5rem;
+            border-right:4px solid #2563eb;
+            padding-right:0.8rem;
+        }
+        .section-title i { color:#2563eb; }
+
+        /* ============================================================
+           PRODUCTS GRID
+        ============================================================ */
+        .product-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+            gap:1.2rem;
+        }
+        .product-card {
+            background:#fff;
+            border-radius:1.2rem;
+            overflow:hidden;
+            border:1px solid #e2e8f0;
+            transition:0.25s;
+            box-shadow:0 2px 8px rgba(0,0,0,0.04);
+        }
+        .product-card:hover {
+            transform:translateY(-4px);
+            border-color:#2563eb;
+            box-shadow:0 8px 24px rgba(37,99,235,0.08);
+        }
+        .product-card .img {
+            background:#f8fafc;
+            text-align:center;
+            padding:1.2rem;
+            font-size:2.5rem;
+            border-bottom:1px solid #e2e8f0;
+        }
+        .product-card .body { padding:0.8rem 1rem; }
+        .product-card .body h4 { font-size:0.9rem; font-weight:700; }
+        .product-card .body .desc { font-size:0.7rem; color:#64748b; margin:0.2rem 0; }
+        .product-card .body .price {
+            font-size:1.1rem;
+            font-weight:800;
+            color:#b45309;
+        }
+        .product-card .body .price small {
+            font-size:0.65rem;
+            color:#64748b;
+            font-weight:400;
+        }
+        .product-card .body .badge {
+            display:inline-block;
+            background:#dbeafe;
+            color:#1d4ed8;
+            font-size:0.55rem;
+            padding:0.05rem 0.6rem;
+            border-radius:40px;
+            font-weight:600;
+        }
+        .product-card .body .badge.gold { background:#fef3c7; color:#b45309; }
+        .product-card .btn-buy {
+            width:100%;
+            margin-top:0.5rem;
+            padding:0.4rem;
+            background:linear-gradient(135deg,#2563eb,#7c6bff);
+            color:#fff;
+            border:none;
+            border-radius:2rem;
+            font-weight:600;
+            font-size:0.75rem;
+            cursor:pointer;
+            transition:0.2s;
+        }
+        .product-card .btn-buy:hover { transform:scale(1.02); box-shadow:0 4px 12px rgba(37,99,235,0.3); }
+
+        /* ============================================================
+           NEWS SECTION (مثل SoSoValue)
+        ============================================================ */
+        .news-grid {
+            display:grid;
+            grid-template-columns:1fr;
+            gap:0.6rem;
+            margin:1rem 0;
+        }
+        .news-item {
+            background:#fff;
+            border-radius:0.8rem;
+            padding:0.8rem 1rem;
+            border:1px solid #e2e8f0;
+            display:flex;
+            align-items:center;
+            gap:0.8rem;
+            transition:0.2s;
+            cursor:default;
+        }
+        .news-item:hover { border-color:#2563eb; background:#f8fafc; }
+        .news-item .icon { font-size:1.2rem; flex-shrink:0; }
+        .news-item .content { flex:1; }
+        .news-item .content .title {
+            font-size:0.85rem;
+            font-weight:600;
+            color:#0f172a;
+        }
+        .news-item .content .summary {
+            font-size:0.7rem;
+            color:#64748b;
+        }
+        .news-item .source {
+            font-size:0.6rem;
+            color:#94a3b8;
+            background:#f1f5f9;
+            padding:0.1rem 0.6rem;
+            border-radius:40px;
+            white-space:nowrap;
+        }
+
+        /* ============================================================
+           VALIDATOR DASHBOARD (ساده‌شده)
+        ============================================================ */
+        .validator-dash {
+            background:#fff;
+            border-radius:1.2rem;
+            padding:1.2rem;
+            border:1px solid #e2e8f0;
+            margin:1.5rem 0;
+        }
+        .stats {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(80px,1fr));
+            gap:0.8rem;
+            text-align:center;
+            margin:0.8rem 0;
+        }
+        .stats .num { font-size:1.6rem; font-weight:900; color:#2563eb; }
+        .stats .label { font-size:0.6rem; color:#64748b; }
+        .search-box {
+            display:flex;
+            gap:0.5rem;
+            flex-wrap:wrap;
+            margin-bottom:0.8rem;
+        }
+        .search-box input {
+            flex:1;
+            padding:0.4rem 0.8rem;
+            border:1px solid #e2e8f0;
+            border-radius:2rem;
+            font-size:0.75rem;
+            background:#f8fafc;
+            min-width:120px;
+        }
+        .search-box input:focus { outline:none; border-color:#2563eb; }
+        .search-box button {
+            background:#2563eb;
+            border:none;
+            padding:0.4rem 1rem;
+            border-radius:2rem;
+            color:#fff;
+            cursor:pointer;
+            font-size:0.75rem;
+        }
+        .validator-list {
+            height:280px;
+            overflow-y:auto;
+            background:#f8fafc;
+            border-radius:0.8rem;
+            border:1px solid #e2e8f0;
+        }
+        .validator-item {
+            display:flex;
+            justify-content:space-between;
+            padding:0.3rem 0.8rem;
+            border-bottom:1px solid #f1f5f9;
+            font-size:0.7rem;
+            flex-wrap:wrap;
+        }
+        .validator-item:hover { background:#f1f5f9; }
+        .v-index { font-weight:700; background:#e2e8f0; padding:0.05rem 0.5rem; border-radius:20px; font-family:monospace; font-size:0.65rem; }
+        .v-balance { background:#e2e8f0; padding:0.05rem 0.5rem; border-radius:20px; font-size:0.65rem; }
+
+        /* ============================================================
+           LICENSE GENERATOR
+        ============================================================ */
+        .license-box {
+            background:#fff;
+            border-radius:1.2rem;
+            padding:1.2rem;
+            border:1px solid #e2e8f0;
+            margin:1.5rem 0;
+        }
+        .btn-group { display:flex; flex-wrap:wrap; gap:0.5rem; margin:0.5rem 0; }
+        .btn-group .btn { font-size:0.75rem; padding:0.4rem 1rem; }
+        .output {
+            background:#f1f5f9;
+            border-radius:0.8rem;
+            padding:0.6rem 0.8rem;
+            font-family:monospace;
+            font-size:0.7rem;
+            margin-top:0.8rem;
+            border:1px solid #e2e8f0;
+            white-space:pre-wrap;
+            min-height:40px;
+            color:#1e293b;
+        }
+
+        /* ============================================================
+           FOOTER
+        ============================================================ */
+        .footer {
+            background:#0f172a;
+            color:#94a3b8;
+            padding:2rem 0 1rem;
+            margin-top:2rem;
+            border-radius:1.5rem 1.5rem 0 0;
+        }
+        .footer-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+            gap:1.5rem;
+            margin-bottom:1.5rem;
+        }
+        .footer-col h4 { color:#facc15; font-size:0.85rem; font-weight:700; margin-bottom:0.5rem; }
+        .footer-col ul { list-style:none; }
+        .footer-col li { margin-bottom:0.25rem; }
+        .footer-col a { color:#cbd5e1; text-decoration:none; font-size:0.75rem; transition:0.2s; }
+        .footer-col a:hover { color:#60a5fa; }
+        .social {
+            display:flex;
+            gap:0.5rem;
+            flex-wrap:wrap;
+            margin-top:0.3rem;
+        }
+        .social a {
+            background:#1e293b;
+            width:30px;
+            height:30px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            font-size:0.85rem;
+            transition:0.2s;
+        }
+        .social a:hover { background:#2563eb; transform:translateY(-2px); }
+        .copyright {
+            text-align:center;
+            border-top:1px solid #1e293b;
+            padding-top:1rem;
+            font-size:0.6rem;
+        }
+        .founder { color:#facc15; font-weight:600; }
+
+        /* ============================================================
+           RESPONSIVE
+        ============================================================ */
+        @media (max-width:768px) {
+            .header-inner { flex-direction:column; align-items:stretch; }
+            .hero { flex-direction:column; text-align:center; }
+            .hero-img { font-size:2.5rem; }
+            .market-overview { grid-template-columns:1fr 1fr; }
+            .product-grid { grid-template-columns:1fr 1fr; }
+        }
+        @media (max-width:480px) {
+            .product-grid { grid-template-columns:1fr; }
+            .market-overview { grid-template-columns:1fr; }
+            .hero-content h1 { font-size:1.3rem; }
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container" id="app">
-        <!-- ===== HEADER ===== -->
-        <header class="app-header">
-            <div class="logo-text">
-                <h1>🏪 Horizon Store</h1>
-                <p>Official Store of <strong>Beaconchain</strong> · Merkle‑Verified Licenses</p>
-            </div>
-            <div class="badge-group">
-                <span class="badge"><i class="fas fa-trophy"></i> #3 Global</span>
-                <span class="badge"><i class="fas fa-shield-alt"></i> 10/10 Security</span>
-                <span class="badge"><i class="fas fa-tree"></i> Merkle Proof</span>
-                <span class="badge"><i class="fas fa-mobile-alt"></i> PWA Ready</span>
-            </div>
-        </header>
+<!-- ============================================================
+HEADER
+============================================================ -->
+<header class="header">
+    <div class="container header-inner">
+        <div class="logo">
+            <i class="fas fa-store"></i>
+            Horizon Store
+            <span>Official Beaconchain Store</span>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="جستجو در محصولات..." id="productSearch">
+            <button id="searchBtn"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+</header>
 
-        <!-- ===== WALLET ADDRESS ===== -->
-        <section class="card wallet-card">
-            <h3><i class="fas fa-wallet"></i> آدرس کیف پول رسمی</h3>
-            <div class="wallet-box">
-                <code>0x4E94F10F0a34a0DF229e68d5902644046258D678</code>
-            </div>
-            <p style="font-size:0.8rem; color:#8fa2dc;">شبکه: Ethereum (ERC-20) · پشتیبانی: ETH / USDC / BNB</p>
-        </section>
+<!-- ============================================================
+TICKER (قیمت‌های لحظه‌ای)
+============================================================ -->
+<div class="ticker-bar">
+    <div class="ticker-track" id="tickerTrack">
+        <span>BTC: <span class="val" id="btc">--</span>$ <span class="green">+2.1%</span></span>
+        <span>ETH: <span class="val" id="eth">--</span>$ <span class="green">+1.8%</span></span>
+        <span>طلا: <span class="val" id="gold">--</span> ت <span class="red">-0.3%</span></span>
+        <span>دلار: <span class="val" id="usd">--</span> ت <span class="green">+0.5%</span></span>
+        <span>BNB: <span class="val">585</span>$ <span class="green">+3.2%</span></span>
+        <span>SOL: <span class="val">143</span>$ <span class="green">+4.1%</span></span>
+        <span>XRP: <span class="val">0.52</span>$ <span class="red">-1.2%</span></span>
+        <span>ADA: <span class="val">0.38</span>$ <span class="green">+2.5%</span></span>
+        <span>DOT: <span class="val">6.2</span>$ <span class="red">-0.8%</span></span>
+        <span>AVAX: <span class="val">28.5</span>$ <span class="green">+5.3%</span></span>
+        <span>MATIC: <span class="val">0.52</span>$ <span class="green">+1.9%</span></span>
+        <span>LINK: <span class="val">11.8</span>$ <span class="green">+2.2%</span></span>
+        <!-- تکرار برای حرکت -->
+        <span>BTC: <span class="val">64,200</span>$ <span class="green">+2.1%</span></span>
+        <span>ETH: <span class="val">3,480</span>$ <span class="green">+1.8%</span></span>
+        <span>طلا: <span class="val">3,530,000</span> ت <span class="red">-0.3%</span></span>
+        <span>دلار: <span class="val">62,500</span> ت <span class="green">+0.5%</span></span>
+    </div>
+</div>
 
-        <!-- ===== PRODUCTS ===== -->
-        <section class="card">
-            <h3><i class="fas fa-cubes"></i> محصولات و لایسنس‌ها</h3>
-            <div class="products-grid" id="productList">
-                <!-- محصولات توسط JavaScript رندر می‌شوند -->
-            </div>
-        </section>
+<div class="container">
 
-        <!-- ===== VALIDATOR DASHBOARD ===== -->
-        <section class="card">
-            <h3><i class="fas fa-chart-line"></i> Validator Dashboard</h3>
-            <div class="stats-row" id="statsRow">
-                <div><span class="stat-number" id="totalValidators">0</span><br><span class="stat-label">Total Validators</span></div>
-                <div><span class="stat-number" id="onlineCount">0</span><br><span class="stat-label">🟢 Online</span></div>
-                <div><span class="stat-number" id="offlineCount">0</span><br><span class="stat-label">🔴 Offline</span></div>
-                <div><span class="stat-number" id="avgBalance">0 ETH</span><br><span class="stat-label">Avg Balance</span></div>
-            </div>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="جستجوی شماره اعتبارسنج ...">
-                <button id="resetBtn"><i class="fas fa-sync-alt"></i> Reset</button>
-            </div>
-            <div class="validator-list-container" id="validatorContainer">
-                <div id="validatorList"></div>
-            </div>
-        </section>
-
-        <!-- ===== LICENSE GENERATOR ===== -->
-        <section class="card">
-            <h3><i class="fas fa-file-certificate"></i> تولید لایسنس Merkle</h3>
-            <div class="btn-group">
-                <button class="btn btn-primary" data-volume="100">Basic (100)</button>
-                <button class="btn btn-primary" data-volume="1000">Pro (1K)</button>
-                <button class="btn btn-primary" data-volume="10000">Enterprise (10K)</button>
-                <button class="btn btn-secondary" id="customLicenseBtn">سفارشی</button>
-            </div>
-            <div id="licenseOutput" class="output-box">— برای تولید لایسنس، یکی از دکمه‌ها را انتخاب کنید —</div>
-        </section>
-
-        <!-- ===== SUPPORT / FUNDING ===== -->
-        <section class="card">
-            <h3><i class="fas fa-heart"></i> حمایت از Horizon</h3>
-            <div class="support-links">
-                <a href="https://etherscan.io/address/0x4E94F10F0a34a0DF229e68d5902644046258D678" target="_blank" class="badge" style="font-size:1rem; padding:0.5rem 1.2rem;">
-                    <i class="fas fa-coins"></i> Donate ETH / USDC
-                </a>
-                <a href="https://beaconchain.us" target="_blank" class="badge" style="font-size:1rem; padding:0.5rem 1.2rem;">
-                    <i class="fas fa-globe"></i> Visit Horizon
-                </a>
-            </div>
-        </section>
-
-        <!-- ===== FOOTER ===== -->
-        <footer class="footer-big">
-            <div class="footer-section">
-                <h4><i class="fas fa-code-branch"></i> Code Repositories</h4>
-                <a href="https://github.com/beaconchain-us/Beaconchain.us" target="_blank">Horizon Web App</a><br>
-                <a href="https://github.com/beaconchain-us/eth2-beaconchain-explorer" target="_blank">Backend Explorer (Go)</a><br>
-                <a href="https://github.com/beaconchain-us/verified-merkle-lib" target="_blank">Verified Merkle Lib</a>
-            </div>
-            <div class="footer-section">
-                <h4><i class="fas fa-envelope"></i> Contact</h4>
-                <a href="mailto:beaconchain@beaconchain.us">beaconchain@beaconchain.us</a>
-                <div class="ownership-note">
-                    © 2025–2026 Mahdi Amolimoghaddam · GPL-3.0<br>
-                    <span style="font-size:0.7rem;">SHA‑256 Page Fingerprint: <span id="pageHash">—</span></span>
-                </div>
-            </div>
-        </footer>
+    <!-- ============================================================
+    MARKET OVERVIEW
+    ============================================================ -->
+    <div class="market-overview">
+        <div class="market-item">
+            <div class="label">کل بازار</div>
+            <div class="value">$2.27T</div>
+            <div class="change green">▲ 0.78%</div>
+        </div>
+        <div class="market-item">
+            <div class="label">حجم ۲۴h</div>
+            <div class="value">$51.42B</div>
+            <div class="change green">▲ 12.4%</div>
+        </div>
+        <div class="market-item">
+            <div class="label">BTC Dominance</div>
+            <div class="value">51.2%</div>
+            <div class="change green">▲ 0.3%</div>
+        </div>
+        <div class="market-item">
+            <div class="label">ETH Dominance</div>
+            <div class="value">17.8%</div>
+            <div class="change red">▼ 0.1%</div>
+        </div>
+        <div class="market-item">
+            <div class="label">Fear & Greed</div>
+            <div class="value">62 🟡</div>
+            <div class="change green">طمع</div>
+        </div>
+        <div class="market-item">
+            <div class="label">DeFi TVL</div>
+            <div class="value">$94.2B</div>
+            <div class="change green">▲ 2.1%</div>
+        </div>
     </div>
 
-    <!-- ===== SERVICE WORKER REGISTRATION ===== -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
-            });
-        }
-    </script>
+    <!-- ============================================================
+    HERO BANNER
+    ============================================================ -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>🔗 Horizon Store — Merkle‑Verified Licenses</h1>
+            <p>خرید لایسنس، آگهی و خدمات با ارز دیجیتال · امنیت ۱۰/۱۰ · رتبه ۳ جهانی</p>
+            <button class="btn btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+                <i class="fas fa-arrow-down"></i> مشاهده محصولات
+            </button>
+        </div>
+        <div class="hero-img">⚡</div>
+    </div>
 
-    <!-- ===== CUSTOM JS ===== -->
-    <script src="/src/js/validators.js"></script>
-    <script src="/src/js/store.js"></script>
-    <script src="/src/js/app.js"></script>
+    <!-- ============================================================
+    NEWS SECTION (مثل SoSoValue)
+    ============================================================ -->
+    <h2 class="section-title"><i class="fas fa-newspaper"></i> اخبار بازار</h2>
+    <div class="news-grid" id="newsGrid"></div>
+
+    <!-- ============================================================
+    PRODUCTS
+    ============================================================ -->
+    <h2 class="section-title" id="products"><i class="fas fa-cubes"></i> محصولات ویژه</h2>
+    <div class="product-grid" id="productGrid"></div>
+
+    <!-- ============================================================
+    NETWORKS (بلاک‌چین‌ها)
+    ============================================================ -->
+    <h2 class="section-title"><i class="fas fa-link"></i> شبکه‌های بلاک‌چین</h2>
+    <div class="product-grid" id="networkGrid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));"></div>
+
+    <!-- ============================================================
+    VALIDATOR DASHBOARD
+    ============================================================ -->
+    <div class="validator-dash">
+        <h3 style="display:flex;align-items:center;gap:0.5rem;font-size:1rem;">
+            <i class="fas fa-chart-line" style="color:#2563eb;"></i> Validator Dashboard
+        </h3>
+        <div class="stats" id="statsRow">
+            <div><span class="num" id="totalValidators">0</span><div class="label">Total</div></div>
+            <div><span class="num" id="onlineCount">0</span><div class="label">🟢 Online</div></div>
+            <div><span class="num" id="offlineCount">0</span><div class="label">🔴 Offline</div></div>
+            <div><span class="num" id="avgBalance">0 ETH</span><div class="label">Avg Balance</div></div>
+        </div>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="جستجوی شماره اعتبارسنج...">
+            <button id="resetBtn"><i class="fas fa-sync-alt"></i> Reset</button>
+        </div>
+        <div class="validator-list" id="validatorContainer"><div id="validatorList"></div></div>
+    </div>
+
+    <!-- ============================================================
+    LICENSE GENERATOR
+    ============================================================ -->
+    <div class="license-box">
+        <h3 style="display:flex;align-items:center;gap:0.5rem;font-size:1rem;">
+            <i class="fas fa-file-certificate" style="color:#2563eb;"></i> تولید لایسنس Merkle
+        </h3>
+        <div class="btn-group">
+            <button class="btn btn-primary" data-volume="100">Basic (100)</button>
+            <button class="btn btn-primary" data-volume="1000">Pro (1K)</button>
+            <button class="btn btn-primary" data-volume="10000">Enterprise (10K)</button>
+            <button class="btn btn-outline" id="customLicenseBtn">سفارشی</button>
+        </div>
+        <div id="licenseOutput" class="output">— برای تولید لایسنس، یکی از دکمه‌ها را انتخاب کنید —</div>
+    </div>
+
+</div>
+
+<!-- ============================================================
+FOOTER
+============================================================ -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>جامعه</h4>
+                <ul>
+                    <li><a href="#">مستندات API</a></li>
+                    <li><a href="#">وضعیت شبکه</a></li>
+                    <li><a href="#">خبرنامه</a></li>
+                    <li><a href="#">دانشنامه</a></li>
+                    <li><a href="#">درخواست پشتیبانی</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>محصولات</h4>
+                <ul>
+                    <li><a href="#">Horizon Premium</a></li>
+                    <li><a href="#">تبلیغات در Horizon</a></li>
+                    <li><a href="#">Explorer as a Service</a></li>
+                    <li><a href="#">پلن‌های API</a></li>
+                    <li><a href="#">پشتیبانی اولویت‌دار</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>شبکه‌های اجتماعی</h4>
+                <div class="social">
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            © ۱۴۰۵ Horizon Store – فروشگاه رسمی Beaconchain | رتبه ۳ جهانی<br>
+            <span class="founder">✨ بنیان‌گذار: مهدی آملی مقدم ✨</span>
+        </div>
+    </div>
+</footer>
+
+<!-- ============================================================
+JAVASCRIPT
+============================================================ -->
+<script>
+// ============================================================
+// PRODUCTS
+// ============================================================
+const PRODUCTS = [
+    { id:'basic', name:'پکیج پایه API', icon:'⚡', desc:'۱۰۰ درخواست تاییدشده با Merkle Proof', price:'$5.20', eth:'0.002 ETH', badge:'لایسنس', badgeClass:'' },
+    { id:'pro', name:'پکیج حرفه‌ای API', icon:'🚀', desc:'۱,۰۰۰ درخواست اولویت‌دار – ایده‌آل برای تولید', price:'$39.00', eth:'0.015 ETH', badge:'لایسنس', badgeClass:'gold' },
+    { id:'enterprise', name:'پکیج سازمانی', icon:'👑', desc:'۱۰,۰۰۰ درخواست عمده – مناسب تیم‌های بزرگ', price:'$260.00', eth:'0.10 ETH', badge:'لایسنس', badgeClass:'gold' },
+    { id:'job', name:'آگهی استخدام', icon:'💼', desc:'ثبت آگهی استخدام در Horizon Hub به مدت ۳۰ روز', price:'$13.00', eth:'0.005 ETH', badge:'آگهی', badgeClass:'' },
+    { id:'digital', name:'آگهی محصول دیجیتال', icon:'📦', desc:'فروش محصول دیجیتال خود در بازارچه Horizon', price:'$20.80', eth:'0.008 ETH', badge:'آگهی', badgeClass:'' },
+    { id:'service', name:'آگهی خدمات آزاد', icon:'🤝', desc:'ارائه خدمات فریلنسری به جامعه Horizon', price:'$7.80', eth:'0.003 ETH', badge:'آگهی', badgeClass:'' }
+];
+
+function renderProducts(filter) {
+    const grid = document.getElementById('productGrid');
+    const items = filter ? PRODUCTS.filter(p => p.name.includes(filter) || p.desc.includes(filter)) : PRODUCTS;
+    grid.innerHTML = items.map(p => `
+        <div class="product-card">
+            <div class="img">${p.icon}</div>
+            <div class="body">
+                <h4>${p.name}</h4>
+                <div class="desc">${p.desc}</div>
+                <div><span class="badge ${p.badgeClass}">${p.badge}</span></div>
+                <div class="price">${p.price} <small>(${p.eth})</small></div>
+                <button class="btn-buy" data-name="${p.name}" data-price="${p.price}" data-eth="${p.eth}">خرید / تولید لایسنس</button>
+            </div>
+        </div>
+    `).join('');
+    document.querySelectorAll('.btn-buy').forEach(btn => {
+        btn.onclick = function() {
+            alert(`خرید ${this.dataset.name}\nقیمت: ${this.dataset.price} (${this.dataset.eth})\nکیف پول: 0x4E94F10F0a34a0DF229e68d5902644046258D678`);
+        };
+    });
+}
+
+document.getElementById('searchBtn').addEventListener('click', function() {
+    renderProducts(document.getElementById('productSearch').value.trim());
+});
+document.getElementById('productSearch').addEventListener('keyup', function(e) {
+    if (e.key === 'Enter') renderProducts(this.value.trim());
+});
+
+// ============================================================
+// NEWS
+// ============================================================
+const NEWS = [
+    { icon:'📰', title:'CME در برابر CFTC', summary:'CME از CFTC به دلیل تأیید قراردادهای فیوچرز perpetual شکایت کرده است.', source:'CoinDesk' },
+    { icon:'📈', title:'توکن‌های سهام در SEC', summary:'SEC در حال آماده‌سازی چارچوبی برای معامله توکن‌های سهام است.', source:'Bloomberg' },
+    { icon:'🔻', title:'MicroStrategy زیر فشار', summary:'سهام ترجیحی STRC به زیر ۱۰۰ دلار سقوط کرده است.', source:'Reuters' },
+    { icon:'🚀', title:'Aave V4 به‌روزرسانی شد', summary:'به‌روزرسانی جدید Aave قصد دارد بازار وام‌دهی سنتی را به زنجیره بیاورد.', source:'The Block' }
+];
+
+function renderNews() {
+    const grid = document.getElementById('newsGrid');
+    grid.innerHTML = NEWS.map(n => `
+        <div class="news-item">
+            <div class="icon">${n.icon}</div>
+            <div class="content">
+                <div class="title">${n.title}</div>
+                <div class="summary">${n.summary}</div>
+            </div>
+            <div class="source">${n.source}</div>
+        </div>
+    `).join('');
+}
+
+// ============================================================
+// NETWORKS
+// ============================================================
+const NETWORKS = [
+    { name:'Ethereum', icon:'🔷', desc:'پلتفرم قراردادهای هوشمند' },
+    { name:'Bitcoin', icon:'₿', desc:'ارز دیجیتال پیشرو' },
+    { name:'BNB Chain', icon:'🟡', desc:'شبکه سریع و کم‌کارمزد' },
+    { name:'Solana', icon:'⚡', desc:'سرعت بالا و مقیاس‌پذیر' },
+    { name:'Polygon', icon:'🟣', desc:'لایه ۲ اتریوم' },
+    { name:'Avalanche', icon:'❄️', desc:'هم‌کناری و سازگار با EVM' }
+];
+
+function renderNetworks() {
+    const grid = document.getElementById('networkGrid');
+    grid.innerHTML = NETWORKS.map(n => `
+        <div class="product-card" style="text-align:center;padding:0.8rem;">
+            <div style="font-size:2rem;">${n.icon}</div>
+            <h4 style="font-size:0.85rem;margin:0.2rem 0;">${n.name}</h4>
+            <div style="font-size:0.6rem;color:#64748b;">${n.desc}</div>
+        </div>
+    `).join('');
+}
+
+// ============================================================
+// PRICE TICKER
+// ============================================================
+async function fetchPrices() {
+    try {
+        const r = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=IRR');
+        if (r.ok) {
+            const d = await r.json();
+            const usd = Math.round(d.rates.IRR);
+            document.getElementById('usd').innerText = usd.toLocaleString();
+            document.getElementById('gold').innerText = Math.round(usd * 0.025).toLocaleString();
+        }
+    } catch(e) {}
+    try {
+        const btc = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+        const eth = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+        if (btc.ok) { const d = await btc.json(); document.getElementById('btc').innerText = Math.round(d.bitcoin.usd).toLocaleString(); }
+        if (eth.ok) { const d = await eth.json(); document.getElementById('eth').innerText = Math.round(d.ethereum.usd).toLocaleString(); }
+    } catch(e) {}
+}
+fetchPrices();
+setInterval(fetchPrices, 120000);
+
+// ============================================================
+// VALIDATORS
+// ============================================================
+let allValidators = [], filtered = [], start = 0;
+const VISIBLE = 200, TOTAL = 100000, KEY = 'horizon_validators_v2';
+
+function genValidator(i) {
+    const r = Math.random();
+    let status = 'online';
+    if (r < 0.08) status = 'offline';
+    else if (r < 0.12) status = 'pending';
+    return { index: i, status, balance: parseFloat((32 + Math.random() * 8).toFixed(2)) };
+}
+
+function loadValidators() {
+    const cached = localStorage.getItem(KEY);
+    if (cached) { try { allValidators = JSON.parse(cached); return; } catch(e) {} }
+    allValidators = [];
+    for (let i = 1; i <= TOTAL; i++) allValidators.push(genValidator(i));
+    localStorage.setItem(KEY, JSON.stringify(allValidators));
+}
+
+function updateStats(vals) {
+    const total = vals.length, online = vals.filter(v=>v.status==='online').length, offline = vals.filter(v=>v.status==='offline').length;
+    const avg = total ? (vals.reduce((s,v)=>s+v.balance,0)/total).toFixed(2) : '0.00';
+    document.getElementById('totalValidators').innerText = total.toLocaleString();
+    document.getElementById('onlineCount').innerText = online.toLocaleString();
+    document.getElementById('offlineCount').innerText = offline.toLocaleString();
+    document.getElementById('avgBalance').innerText = avg + ' ETH';
+}
+
+function renderList() {
+    const container = document.getElementById('validatorList');
+    if (!filtered.length) { container.innerHTML = '<div style="text-align:center;padding:1rem;color:#94a3b8;font-size:0.8rem;">هیچ اعتبارسنجی یافت نشد</div>'; return; }
+    const end = Math.min(start + VISIBLE, filtered.length);
+    let html = '';
+    for (let i = start; i < end; i++) {
+        const v = filtered[i];
+        const color = v.status==='online' ? '#22c55e' : v.status==='offline' ? '#ef4444' : '#eab308';
+        html += `<div class="validator-item"><span class="v-index">#${v.index.toLocaleString()}</span><span style="color:${color}">${v.status==='online'?'🟢':v.status==='offline'?'🔴':'🟡'} ${v.status}</span><span class="v-balance">${v.balance} ETH</span></div>`;
+    }
+    container.innerHTML = html;
+    container.onscroll = function() {
+        if (this.scrollTop + this.clientHeight >= this.scrollHeight - 200 && start + VISIBLE < filtered.length) {
+            start += VISIBLE; renderList();
+        }
+        if (this.scrollTop <= 200 && start > 0) { start = Math.max(0, start - VISIBLE); renderList(); }
+    };
+}
+
+function applySearch() {
+    const term = document.getElementById('searchInput').value.trim();
+    const num = parseInt(term);
+    filtered = term === '' ? [...allValidators] : (isNaN(num) ? [...allValidators] : allValidators.filter(v => v.index === num));
+    start = 0;
+    updateStats(filtered);
+    renderList();
+}
+
+loadValidators();
+filtered = [...allValidators];
+updateStats(filtered);
+renderList();
+document.getElementById('searchInput').addEventListener('input', applySearch);
+document.getElementById('resetBtn').addEventListener('click', () => { document.getElementById('searchInput').value = ''; applySearch(); });
+
+// ============================================================
+// LICENSE GENERATOR
+// ============================================================
+async function sha256(input) {
+    const hash = await crypto.subtle.digest('SHA-256', input);
+    return new Uint8Array(hash);
+}
+function toHex(arr) { return Array.from(arr).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+
+class MerkleLicense {
+    constructor(volume, seed = crypto.getRandomValues(new Uint8Array(32))) {
+        this.volume = volume; this.seed = seed; this.root = null;
+    }
+    async generate() {
+        let leaves = [];
+        for (let i = 0; i < this.volume; i++) {
+            const idx = new Uint8Array(4);
+            new DataView(idx.buffer).setUint32(0, i, true);
+            const concat = new Uint8Array(this.seed.length + idx.length);
+            concat.set(this.seed, 0); concat.set(idx, this.seed.length);
+            leaves.push(await sha256(concat));
+        }
+        let level = leaves;
+        while (level.length > 1) {
+            const next = [];
+            for (let i = 0; i < level.length; i += 2) {
+                const left = level[i], right = (i+1 < level.length) ? level[i+1] : left;
+                const concat = new Uint8Array(left.length + right.length);
+                concat.set(left, 0); concat.set(right, left.length);
+                next.push(await sha256(concat));
+            }
+            level = next;
+        }
+        this.root = level[0] || new Uint8Array(32);
+        return this.root;
+    }
+}
+
+async function generateLicense(volume, name) {
+    const out = document.getElementById('licenseOutput');
+    out.innerText = '⏳ در حال تولید درخت مرکل...';
+    try {
+        const lic = new MerkleLicense(volume);
+        const root = await lic.generate();
+        const rootHex = toHex(root);
+        const ts = Date.now();
+        const data = {
+            version: 3,
+            product: name || 'Horizon License',
+            volume,
+            root: rootHex,
+            timestamp: ts,
+            createdBy: 'Beaconchain Horizon',
+            seedPreview: toHex(lic.seed).slice(0,16)+'…',
+            wallet: '0x4E94F10F0a34a0DF229e68d5902644046258D678'
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `license_${volume}_${ts}.license`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        out.innerText = `✅ لایسنس تولید شد!\nحجم: ${volume.toLocaleString()} درخواست\nریشه: ${rootHex.slice(0,48)}…\nزمان: ${new Date(ts).toLocaleString('fa-IR')}\nفایل دانلود شد.`;
+    } catch(e) { out.innerText = '❌ خطا: ' + e.message; }
+}
+
+document.querySelectorAll('[data-volume]').forEach(btn => {
+    btn.onclick = function() { generateLicense(parseInt(this.dataset.volume), this.innerText.trim()); };
+});
+document.getElementById('customLicenseBtn').onclick = function() {
+    const v = prompt('تعداد درخواست (مثلاً ۵۰۰):', '500');
+    if (v && !isNaN(parseInt(v))) generateLicense(parseInt(v), 'سفارشی');
+};
+
+// ============================================================
+// INIT
+// ============================================================
+renderProducts();
+renderNews();
+renderNetworks();
+console.log('Horizon Store loaded successfully.');
+</script>
 </body>
 </html>
