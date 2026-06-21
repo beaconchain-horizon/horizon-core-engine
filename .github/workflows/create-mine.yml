@@ -1,0 +1,19 @@
+name: Create mine branch
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  setup-mine:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create and push mine branch
+        run: |
+          git checkout -b mine || echo "Branch mine already exists"
+          git push -u origin mine || echo "Branch mine already exists on remote"
