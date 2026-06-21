@@ -30,10 +30,16 @@ jobs:
           git clone https://github.com/beaconchain-horizon/Beaconchain.us.git ../Beaconchain.us || true
           git clone https://github.com/beaconchain-horizon/hub.git ../hub || true
 
-      - name: Install Ollama
+      - name: Install and start Ollama
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
           echo "PATH=$PATH:$HOME/.ollama/bin" >> $GITHUB_ENV
+          # Start the server in the background
+          ollama serve &
+          # Wait for the server to be ready
+          sleep 5
+          # Verify the server is running
+          ollama list || (echo "Ollama server failed to start" && exit 1)
 
       - name: Pull AI model
         run: |
@@ -118,7 +124,7 @@ jobs:
         if: github.event_name == 'push'
         run: |
           git config user.name "Horizon AI"
-          git config user.email "horizon-ai@beaconchain.us"
+          git config.user.email "horizon-ai@beaconchain.us"
           git add .
           git commit -m "🤖 Horizon AI: auto-update" || echo "No changes to commit"
           git push origin mine || echo "Push failed"
