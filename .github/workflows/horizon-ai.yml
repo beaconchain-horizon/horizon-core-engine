@@ -1,0 +1,123 @@
+name: Horizon AI - مغز اکوسیستم
+
+on:
+  push:
+    branches: [ mine ]
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'دستور مورد نظر (مثلاً: convert go python main.go)'
+        required: false
+        default: 'status'
+
+jobs:
+  horizon-ai:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout all repositories
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout other repos
+        run: |
+          mkdir -p ../Beaconchain.us ../hub
+          git clone https://github.com/beaconchain-horizon/Beaconchain.us.git ../Beaconchain.us || true
+          git clone https://github.com/beaconchain-horizon/hub.git ../hub || true
+
+      - name: Install Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          echo "PATH=$PATH:$HOME/.ollama/bin" >> $GITHUB_ENV
+
+      - name: Pull AI model
+        run: |
+          ollama pull deepseek-coder:6.7b
+
+      - name: Gather context
+        id: context
+        run: |
+          echo "📂 جمع‌آوری زمینه از کدهای پروژه..."
+          echo "## زمینه پروژه Horizon" > context.txt
+          echo "" >> context.txt
+          echo "### horizon-core-engine (Go)" >> context.txt
+          head -n 50 main.go 2>/dev/null >> context.txt || echo "فایل main.go یافت نشد" >> context.txt
+          echo "" >> context.txt
+          echo "### Beaconchain.us (HTML/JS)" >> context.txt
+          head -n 50 ../Beaconchain.us/index.html 2>/dev/null >> context.txt || echo "فایل index.html یافت نشد" >> context.txt
+          echo "" >> context.txt
+          echo "### hub (HTML/JS)" >> context.txt
+          head -n 50 ../hub/index.html 2>/dev/null >> context.txt || echo "فایل index.html یافت نشد" >> context.txt
+
+      - name: Process command
+        id: process
+        run: |
+          COMMAND="${{ github.event.inputs.command }}"
+          if [ -z "$COMMAND" ]; then
+            COMMAND="status"
+          fi
+          echo "🧠 اجرای دستور: $COMMAND"
+          
+          if [[ "$COMMAND" == "status" ]]; then
+            echo "📊 وضعیت مخزن‌ها:" > output.txt
+            echo "- horizon-core-engine: $(git branch --show-current)" >> output.txt
+            echo "- Beaconchain.us: $(cd ../Beaconchain.us && git branch --show-current 2>/dev/null || echo 'نامشخص')" >> output.txt
+            echo "- hub: $(cd ../hub && git branch --show-current 2>/dev/null || echo 'نامشخص')" >> output.txt
+          elif [[ "$COMMAND" == convert* ]]; then
+            from=$(echo "$COMMAND" | awk '{print $2}')
+            to=$(echo "$COMMAND" | awk '{print $3}')
+            file=$(echo "$COMMAND" | awk '{print $4}')
+            if [ -f "$file" ]; then
+              echo "🔄 تبدیل کد از $from به $to برای فایل $file" > output.txt
+              echo "لطفاً کد زیر را از $from به $to تبدیل کن:" >> output.txt
+              echo "" >> output.txt
+              cat "$file" >> output.txt
+              echo "" >> output.txt
+              echo "سپس پاسخ را با توضیحات کامل برگردان." >> output.txt
+            else
+              echo "❌ فایل $file یافت نشد" > output.txt
+            fi
+          else
+            echo "❌ دستور ناشناخته: $COMMAND" > output.txt
+            echo "دستورات پشتیبانی شده:" >> output.txt
+            echo "  status" >> output.txt
+            echo "  convert [from_lang] [to_lang] [file_path]" >> output.txt
+          fi
+
+      - name: Run AI Model
+        id: ai
+        run: |
+          CONTEXT=$(cat context.txt)
+          QUERY=$(cat output.txt)
+          FULL_PROMPT="شما یک دستیار هوش مصنوعی اختصاصی برای اکوسیستم Horizon هستید. زمینه پروژه:\n$CONTEXT\n\nدرخواست کاربر:\n$QUERY"
+          echo "$FULL_PROMPT" > full_prompt.txt
+          ollama run deepseek-coder:6.7b "$(cat full_prompt.txt)" > response.txt 2>&1 || echo "خطا در اجرای مدل" > response.txt
+
+      - name: Create Issue or PR Comment
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const response = fs.readFileSync('response.txt', 'utf8');
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Horizon AI پاسخ به دستور: ${{ github.event.inputs.command }}`,
+              body: `**نتیجه:**\n\`\`\`\n${response}\n\`\`\``
+            });
+            console.log(`✅ Issue #${issue.data.number} ایجاد شد.`);
+
+      - name: Commit changes (optional)
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "Horizon AI"
+          git config user.email "horizon-ai@beaconchain.us"
+          git add .
+          git commit -m "🤖 Horizon AI: خودکار" || echo "تغییری برای کامیت وجود ندارد"
+          git push origin mine || echo "پوش انجام نشد"
