@@ -1,4 +1,4 @@
-name: Horizon AI - مغز اکوسیستم
+name: Horizon AI - Ecosystem Brain
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       command:
-        description: 'دستور مورد نظر (مثلاً: convert go python main.go)'
+        description: 'Command (e.g., convert go python main.go)'
         required: false
         default: 'status'
 
@@ -42,17 +42,17 @@ jobs:
       - name: Gather context
         id: context
         run: |
-          echo "📂 جمع‌آوری زمینه از کدهای پروژه..."
-          echo "## زمینه پروژه Horizon" > context.txt
+          echo "📂 Gathering project context..." > context.txt
+          echo "## Horizon Project Context" >> context.txt
           echo "" >> context.txt
           echo "### horizon-core-engine (Go)" >> context.txt
-          head -n 50 main.go 2>/dev/null >> context.txt || echo "فایل main.go یافت نشد" >> context.txt
+          head -n 50 main.go 2>/dev/null >> context.txt || echo "main.go not found" >> context.txt
           echo "" >> context.txt
           echo "### Beaconchain.us (HTML/JS)" >> context.txt
-          head -n 50 ../Beaconchain.us/index.html 2>/dev/null >> context.txt || echo "فایل index.html یافت نشد" >> context.txt
+          head -n 50 ../Beaconchain.us/index.html 2>/dev/null >> context.txt || echo "index.html not found" >> context.txt
           echo "" >> context.txt
           echo "### hub (HTML/JS)" >> context.txt
-          head -n 50 ../hub/index.html 2>/dev/null >> context.txt || echo "فایل index.html یافت نشد" >> context.txt
+          head -n 50 ../hub/index.html 2>/dev/null >> context.txt || echo "index.html not found" >> context.txt
 
       - name: Process command
         id: process
@@ -61,42 +61,43 @@ jobs:
           if [ -z "$COMMAND" ]; then
             COMMAND="status"
           fi
-          echo "🧠 اجرای دستور: $COMMAND"
+          echo "🧠 Executing command: $COMMAND"
           
           if [[ "$COMMAND" == "status" ]]; then
-            echo "📊 وضعیت مخزن‌ها:" > output.txt
+            echo "📊 Repository status:" > output.txt
             echo "- horizon-core-engine: $(git branch --show-current)" >> output.txt
-            echo "- Beaconchain.us: $(cd ../Beaconchain.us && git branch --show-current 2>/dev/null || echo 'نامشخص')" >> output.txt
-            echo "- hub: $(cd ../hub && git branch --show-current 2>/dev/null || echo 'نامشخص')" >> output.txt
+            echo "- Beaconchain.us: $(cd ../Beaconchain.us && git branch --show-current 2>/dev/null || echo 'unknown')" >> output.txt
+            echo "- hub: $(cd ../hub && git branch --show-current 2>/dev/null || echo 'unknown')" >> output.txt
           elif [[ "$COMMAND" == convert* ]]; then
             from=$(echo "$COMMAND" | awk '{print $2}')
             to=$(echo "$COMMAND" | awk '{print $3}')
             file=$(echo "$COMMAND" | awk '{print $4}')
             if [ -f "$file" ]; then
-              echo "🔄 تبدیل کد از $from به $to برای فایل $file" > output.txt
-              echo "لطفاً کد زیر را از $from به $to تبدیل کن:" >> output.txt
+              echo "🔄 Converting code from $from to $to for file $file" > output.txt
+              echo "Please convert the following code from $from to $to:" >> output.txt
               echo "" >> output.txt
               cat "$file" >> output.txt
               echo "" >> output.txt
-              echo "سپس پاسخ را با توضیحات کامل برگردان." >> output.txt
+              echo "Return the result with full explanations." >> output.txt
             else
-              echo "❌ فایل $file یافت نشد" > output.txt
+              echo "❌ File $file not found" > output.txt
             fi
           else
-            echo "❌ دستور ناشناخته: $COMMAND" > output.txt
-            echo "دستورات پشتیبانی شده:" >> output.txt
+            echo "❌ Unknown command: $COMMAND" > output.txt
+            echo "Supported commands:" >> output.txt
             echo "  status" >> output.txt
             echo "  convert [from_lang] [to_lang] [file_path]" >> output.txt
           fi
 
-      - name: Run AI Model
+      - name: Run AI Model (Clean Output)
         id: ai
         run: |
           CONTEXT=$(cat context.txt)
           QUERY=$(cat output.txt)
-          FULL_PROMPT="شما یک دستیار هوش مصنوعی اختصاصی برای اکوسیستم Horizon هستید. زمینه پروژه:\n$CONTEXT\n\nدرخواست کاربر:\n$QUERY"
+          FULL_PROMPT="You are a dedicated AI assistant for the Horizon ecosystem. Project context:\n$CONTEXT\n\nUser request:\n$QUERY"
           echo "$FULL_PROMPT" > full_prompt.txt
-          ollama run deepseek-coder:6.7b "$(cat full_prompt.txt)" > response.txt 2>&1 || echo "خطا در اجرای مدل" > response.txt
+          # Run the model and strip ANSI escape codes (colors, animations, etc.)
+          ollama run deepseek-coder:6.7b "$(cat full_prompt.txt)" 2>&1 | sed -r 's/\x1B\[[0-9;]*[mK]//g' > response.txt || echo "Error running the model" > response.txt
 
       - name: Create Issue or PR Comment
         if: github.event_name == 'workflow_dispatch'
@@ -108,10 +109,10 @@ jobs:
             const issue = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `Horizon AI پاسخ به دستور: ${{ github.event.inputs.command }}`,
-              body: `**نتیجه:**\n\`\`\`\n${response}\n\`\`\``
+              title: `Horizon AI response to command: ${{ github.event.inputs.command }}`,
+              body: `**Result:**\n\`\`\`\n${response}\n\`\`\``
             });
-            console.log(`✅ Issue #${issue.data.number} ایجاد شد.`);
+            console.log(`✅ Issue #${issue.data.number} created.`);
 
       - name: Commit changes (optional)
         if: github.event_name == 'push'
@@ -119,5 +120,5 @@ jobs:
           git config user.name "Horizon AI"
           git config user.email "horizon-ai@beaconchain.us"
           git add .
-          git commit -m "🤖 Horizon AI: خودکار" || echo "تغییری برای کامیت وجود ندارد"
-          git push origin mine || echo "پوش انجام نشد"
+          git commit -m "🤖 Horizon AI: auto-update" || echo "No changes to commit"
+          git push origin mine || echo "Push failed"
