@@ -1,0 +1,12 @@
+horizon-ecosystem-final.zip
+├── internal/
+│   ├── handlers/
+│   │   ├── customers.go      ← New
+│   │   └── payment.go        ← New
+│   ├── models/
+│   │   └── customer.go       ← New
+│   └── database/
+│       └── migrations.go     ← New
+├── cmd/
+│   └── main.go               ← Updated (with new routes)
+└── orchestrator.sh           ← Unified script (updates everything)
