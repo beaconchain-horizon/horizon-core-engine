@@ -1,0 +1,14 @@
+horizon_backend_package/
+├── go.mod
+├── cmd/
+│   └── main.go
+├── internal/
+│   ├── database/
+│   │   └── db.go
+│   ├── models/
+│   │   └── models.go
+│   └── handlers/
+│       ├── health.go
+│       ├── products.go
+│       └── prices.go
+└── setup-ecosystem.sh
