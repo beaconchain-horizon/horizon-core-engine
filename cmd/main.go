@@ -37,6 +37,10 @@ func main() {
 		api.GET("/customers", handlers.GetCustomers(db))
 		api.POST("/payments", handlers.CreatePayment(db))
 		api.GET("/payments", handlers.GetPayments(db))
+
+		// Validator routes (added)
+		api.GET("/validators", handlers.GetValidators())
+		api.GET("/validators/:index", handlers.GetValidatorByIndex())
 	}
 
 	// Get the port from environment or use default
