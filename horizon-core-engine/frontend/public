@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Horizon Store – فروش لایسنس، آگهی و خدمات با ارز دیجیتال | Official Beaconchain Store">
+    <meta name="theme-color" content="#0a0f1e">
+    <meta name="author" content="Mahdi Amolimoghaddam">
+    <title>Horizon Store | فروشگاه رسمی Beaconchain</title>
+
+    <!-- ============================================================
+    FONTS & ICONS
+    ============================================================ -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- ============================================================
+    PWA MANIFEST
+    ============================================================ -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- ============================================================
+    CUSTOM CSS
+    ============================================================ -->
+    <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body>
+    <div class="container" id="app">
+
+        <!-- ============================================================
+        HEADER
+        ============================================================ -->
+        <header class="app-header">
+            <div class="logo-text">
+                <h1>🏪 Horizon Store</h1>
+                <p>Official Store of <strong>Beaconchain</strong> · Merkle‑Verified Licenses</p>
+            </div>
+            <div class="badge-group">
+                <span class="badge"><i class="fas fa-trophy"></i> #3 Global</span>
+                <span class="badge"><i class="fas fa-shield-alt"></i> 10/10 Security</span>
+                <span class="badge"><i class="fas fa-tree"></i> Merkle Proof</span>
+                <span class="badge"><i class="fas fa-mobile-alt"></i> PWA Ready</span>
+            </div>
+        </header>
+
+        <!-- ============================================================
+        WALLET ADDRESS
+        ============================================================ -->
+        <section class="card wallet-card">
+            <h3><i class="fas fa-wallet"></i> آدرس کیف پول رسمی</h3>
+            <div class="wallet-box">
+                <code>0x4E94F10F0a34a0DF229e68d5902644046258D678</code>
+            </div>
+            <p style="font-size:0.8rem; color:#8fa2dc;">شبکه: Ethereum (ERC-20) · پشتیبانی: ETH / USDC / BNB</p>
+        </section>
+
+        <!-- ============================================================
+        PRODUCTS
+        ============================================================ -->
+        <section class="card">
+            <h3><i class="fas fa-cubes"></i> محصولات و لایسنس‌ها</h3>
+            <div class="products-grid" id="productList">
+                <!-- Products rendered by JavaScript (store.js) -->
+            </div>
+        </section>
+
+        <!-- ============================================================
+        VALIDATOR DASHBOARD
+        ============================================================ -->
+        <section class="card">
+            <h3><i class="fas fa-chart-line"></i> Validator Dashboard</h3>
+            <div class="stats-row" id="statsRow">
+                <div><span class="stat-number" id="totalValidators">0</span><br><span class="stat-label">Total Validators</span></div>
+                <div><span class="stat-number" id="onlineCount">0</span><br><span class="stat-label">🟢 Online</span></div>
+                <div><span class="stat-number" id="offlineCount">0</span><br><span class="stat-label">🔴 Offline</span></div>
+                <div><span class="stat-number" id="avgBalance">0 ETH</span><br><span class="stat-label">Avg Balance</span></div>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="جستجوی شماره اعتبارسنج ...">
+                <button id="resetBtn"><i class="fas fa-sync-alt"></i> Reset</button>
+                <button id="refreshCacheBtn"><i class="fas fa-redo-alt"></i> Refresh Cache</button>
+            </div>
+            <div class="validator-list-container" id="validatorContainer">
+                <div id="validatorList"></div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        LICENSE GENERATOR
+        ============================================================ -->
+        <section class="card">
+            <h3><i class="fas fa-file-certificate"></i> تولید لایسنس Merkle</h3>
+            <div class="btn-group">
+                <button class="btn btn-primary" data-volume="100">Basic (100)</button>
+                <button class="btn btn-primary" data-volume="1000">Pro (1K)</button>
+                <button class="btn btn-primary" data-volume="10000">Enterprise (10K)</button>
+                <button class="btn btn-secondary" id="customLicenseBtn">سفارشی</button>
+            </div>
+            <div id="licenseOutput" class="output-box">— برای تولید لایسنس، یکی از دکمه‌ها را انتخاب کنید —</div>
+        </section>
+
+        <!-- ============================================================
+        SUPPORT / FUNDING
+        ============================================================ -->
+        <section class="card">
+            <h3><i class="fas fa-heart"></i> حمایت از Horizon</h3>
+            <div class="support-links">
+                <a href="https://etherscan.io/address/0x4E94F10F0a34a0DF229e68d5902644046258D678" target="_blank" class="badge" style="font-size:1rem; padding:0.5rem 1.2rem;">
+                    <i class="fas fa-coins"></i> Donate ETH / USDC
+                </a>
+                <a href="https://beaconchain.us" target="_blank" class="badge" style="font-size:1rem; padding:0.5rem 1.2rem;">
+                    <i class="fas fa-globe"></i> Visit Horizon
+                </a>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        FOOTER
+        ============================================================ -->
+        <footer class="footer-big">
+            <!-- Column 1: Code Repositories -->
+            <div class="footer-section">
+                <h4><i class="fas fa-code-branch"></i> Code Repositories</h4>
+                <a href="https://github.com/beaconchain-us/Beaconchain.us" target="_blank">Horizon Web App</a><br>
+                <a href="https://github.com/beaconchain-us/eth2-beaconchain-explorer" target="_blank">Backend Explorer (Go)</a><br>
+                <a href="https://github.com/beaconchain-us/verified-merkle-lib" target="_blank">Verified Merkle Lib</a>
+            </div>
+
+            <!-- Column 2: GitHub Resources -->
+            <div class="footer-section">
+                <h4><i class="fas fa-link"></i> Resources & Ecosystem</h4>
+                <a href="https://github.blog" target="_blank">GitHub Blog</a><br>
+                <a href="https://github.blog/changelog" target="_blank">Changelog</a><br>
+                <a href="https://docs.github.com" target="_blank">Docs</a><br>
+                <a href="https://github.com/customer-stories" target="_blank">Customer Stories</a><br>
+                <a href="https://githubuniverse.com" target="_blank">GitHub Universe</a><br>
+                <a href="https://github.com/github-copilot/cli" target="_blank">Try GitHub Copilot CLI</a>
+            </div>
+
+            <!-- Column 3: Horizon Ecosystem -->
+            <div class="footer-section">
+                <h4><i class="fas fa-users"></i> Horizon Ecosystem</h4>
+                <a href="https://github.com/beaconchain-horizon" target="_blank">GitHub Organization</a><br>
+                <a href="https://github.com/beaconchain-horizon/horizon-core-engine" target="_blank">Core Engine (Go)</a><br>
+                <a href="https://github.com/beaconchain-horizon/gobitfly" target="_blank">Other Projects</a>
+            </div>
+
+            <!-- Column 4: Contact & Legal -->
+            <div class="footer-section">
+                <h4><i class="fas fa-envelope"></i> Contact & Legal</h4>
+                <a href="mailto:beaconchain@beaconchain.us">beaconchain@beaconchain.us</a><br>
+                <a href="mailto:gamma.mahdii@gmail.com">gamma.mahdii@gmail.com</a>
+                <div class="ownership-note">
+                    © 2025–2026 Mahdi Amolimoghaddam · GPL-3.0<br>
+                    <span style="font-size:0.7rem;">SHA‑256 Page Fingerprint: <span id="pageHash">—</span></span>
+                </div>
+            </div>
+        </footer>
+
+    </div> <!-- end container -->
+
+    <!-- ============================================================
+    SERVICE WORKER REGISTRATION
+    ============================================================ -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('[SW] Registered:', reg))
+                    .catch(err => console.warn('[SW] Registration failed:', err));
+            });
+        }
+    </script>
+
+    <!-- ============================================================
+    JAVASCRIPT MODULES
+    ============================================================ -->
+    <script src="/src/js/validators.js"></script>
+    <script src="/src/js/store.js"></script>
+    <script src="/src/js/app.js"></script>
+</body>
+</html>
