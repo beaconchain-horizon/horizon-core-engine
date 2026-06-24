@@ -1,0 +1,438 @@
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: radial-gradient(circle at 10% 20%, #0a0f1e, #05070f);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #eef2ff;
+  padding: 1.5rem;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff, #4f9eff, #c084fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-right: 3px solid #4f9eff;
+  padding-right: 0.7rem;
+}
+
+/* ============================================================
+   HEADER & BADGES
+   ============================================================ */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(100, 150, 255, 0.3);
+}
+
+.logo-text p {
+  font-size: 0.75rem;
+  color: #8fa2dc;
+}
+
+.badge-group {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  background: rgba(79, 158, 255, 0.15);
+  backdrop-filter: blur(4px);
+  padding: 0.4rem 0.8rem;
+  border-radius: 60px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1px solid rgba(79, 158, 255, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: rgba(20, 24, 36, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 1.2rem;
+  padding: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: 0.2s;
+  margin-bottom: 1.5rem;
+}
+
+.card:hover {
+  border-color: rgba(79, 158, 255, 0.3);
+  background: rgba(28, 32, 48, 0.85);
+}
+
+/* ============================================================
+   WALLET BOX
+   ============================================================ */
+.wallet-card {
+  border: 1px solid #4f9eff;
+}
+
+.wallet-box {
+  background: #0b0e1a;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin: 0.5rem 0 1rem;
+  word-break: break-all;
+  font-family: monospace;
+  border: 1px solid #4f9eff;
+}
+
+.wallet-box code {
+  font-size: 1.1rem;
+  color: #c084fc;
+}
+
+/* ============================================================
+   PRODUCTS GRID
+   ============================================================ */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.2rem;
+  margin: 1rem 0;
+}
+
+.product-card {
+  background: rgba(20, 24, 36, 0.5);
+  border-radius: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: center;
+  transition: 0.2s;
+}
+
+.product-card:hover {
+  border-color: #4f9eff;
+  transform: translateY(-4px);
+}
+
+.product-card h4 {
+  font-size: 1rem;
+  color: #c084fc;
+  margin-bottom: 0.3rem;
+}
+
+.product-card .price {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #c084fc;
+  margin: 0.5rem 0;
+}
+
+/* ============================================================
+   STATS ROW
+   ============================================================ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #c084fc;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: #9bb2ff;
+}
+
+/* ============================================================
+   SEARCH BOX
+   ============================================================ */
+.search-box {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.8rem;
+  min-width: 150px;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #4f9eff;
+}
+
+.search-box button {
+  background: #2b3550;
+  border: none;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border-radius: 2rem;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 600;
+}
+
+.search-box button:hover {
+  background: #4f46e5;
+}
+
+/* ============================================================
+   VALIDATOR LIST
+   ============================================================ */
+.validator-list-container {
+  height: 400px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.validator-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.validator-item:hover {
+  background: rgba(79, 158, 255, 0.1);
+}
+
+.validator-index {
+  font-weight: 700;
+  background: #1e2538;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-family: monospace;
+}
+
+.validator-item .balance {
+  font-family: monospace;
+  background: #2a2d3e;
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.5rem 0;
+}
+
+.btn {
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 2rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
+  color: #fff;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4f9eff, #7c6bff);
+}
+
+.btn-primary:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px rgba(79, 158, 255, 0.3);
+}
+
+.btn-secondary {
+  background: rgba(79, 158, 255, 0.15);
+  border: 1px solid rgba(79, 158, 255, 0.3);
+}
+
+.btn-secondary:hover {
+  background: rgba(79, 158, 255, 0.25);
+}
+
+/* ============================================================
+   OUTPUT BOX (License / Logs)
+   ============================================================ */
+.output-box {
+  background: #0f172a;
+  border-radius: 1rem;
+  padding: 0.8rem 1.2rem;
+  font-family: monospace;
+  font-size: 0.8rem;
+  margin-top: 1rem;
+  border: 1px solid #1e293b;
+  white-space: pre-wrap;
+  word-break: break-all;
+  min-height: 60px;
+  color: #a5b4fc;
+}
+
+/* ============================================================
+   SUPPORT LINKS
+   ============================================================ */
+.support-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.support-links .badge {
+  font-size: 1rem;
+  padding: 0.5rem 1.2rem;
+  text-decoration: none;
+  color: #eef2ff;
+  transition: 0.2s;
+}
+
+.support-links .badge:hover {
+  background: rgba(79, 158, 255, 0.3);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer-big {
+  margin-top: 2rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  font-size: 0.7rem;
+}
+
+.footer-section h4 {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  color: #bfd6ff;
+}
+
+.footer-section a {
+  color: #a4bcff;
+  text-decoration: none;
+  display: inline-block;
+  margin: 0.2rem 0;
+}
+
+.footer-section a:hover {
+  text-decoration: underline;
+}
+
+.ownership-note {
+  font-size: 0.65rem;
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #99a9dd;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #141c2c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4f9eff;
+  border-radius: 10px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .validator-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .search-box input {
+    min-width: 100px;
+  }
+}

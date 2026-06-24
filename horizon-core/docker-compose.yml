@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: horizon-db
+    environment:
+      POSTGRES_USER: horizon
+      POSTGRES_PASSWORD: horizon_secure_pass
+      POSTGRES_DB: horizon
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - horizon-network
+
+  explorer:
+    image: gobitfly/eth2-beaconchain-explorer:latest
+    container_name: horizon-explorer
+    depends_on:
+      - postgres
+    ports:
+      - "3500:3500"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: horizon
+      POSTGRES_PASSWORD: horizon_secure_pass
+      POSTGRES_DB: horizon
+      CHAIN_NAME: mainnet
+      ETH2_CONFIG: http://your-beacon-node:3500
+      WEB_PORT: 3500
+      ENABLE_EXPLORER: true
+    restart: unless-stopped
+    networks:
+      - horizon-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: horizon-backend
+    depends_on:
+      - postgres
+      - explorer
+    ports:
+      - "8080:8080"
+    environment:
+      SERVER_PORT: 8080
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: horizon
+      DB_PASSWORD: horizon_secure_pass
+      DB_NAME: horizon
+      EXPLORER_URL: http://explorer:3500
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - horizon-network
+
+  frontend:
+    image: nginx:alpine
+    container_name: horizon-frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html:ro
+      - ./frontend/src:/usr/share/nginx/html/src:ro
+    restart: unless-stopped
+    networks:
+      - horizon-network
+
+volumes:
+  postgres-data:
+
+networks:
+  horizon-network:
+    driver: bridge
