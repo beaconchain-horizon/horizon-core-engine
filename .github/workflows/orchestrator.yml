@@ -1,0 +1,101 @@
+name: Horizon Orchestrator
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Command to run (status, sync, deploy, or custom)'
+        required: false
+        default: 'status'
+
+jobs:
+  orchestrator:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout core repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Install Go dependencies
+        run: |
+          echo "📦 Installing Go dependencies..."
+          go mod tidy
+
+      - name: Ensure mine branch exists
+        run: |
+          echo "🔍 Ensuring mine branch exists..."
+          git checkout mine 2>/dev/null || git checkout -b mine
+          git push -u origin mine
+
+      - name: Process command
+        id: process
+        run: |
+          COMMAND="${{ github.event.inputs.command }}"
+          echo "🧠 Executing command: $COMMAND"
+
+          if [[ "$COMMAND" == "status" ]]; then
+            echo "📊 Repository status:" > output.txt
+            echo "- Current branch: $(git branch --show-current)" >> output.txt
+            echo "- Last commit: $(git log -1 --pretty=format:'%h - %s')" >> output.txt
+            echo "- Files in root:" >> output.txt
+            ls -la >> output.txt 2>/dev/null || echo "  (no files)" >> output.txt
+
+          elif [[ "$COMMAND" == "sync" ]]; then
+            echo "🔄 Syncing frontend files to Beaconchain.us and hub..." > output.txt
+            mkdir -p ../Beaconchain.us ../hub
+            cp -f Beaconchain.us/index.html ../Beaconchain.us/ 2>/dev/null && echo "  ✅ Copied to Beaconchain.us" >> output.txt
+            cp -f hub/index.html ../hub/ 2>/dev/null && echo "  ✅ Copied to hub" >> output.txt
+
+          elif [[ "$COMMAND" == "deploy" ]]; then
+            echo "🚀 Deploying backend..." > output.txt
+            go run cmd/main.go &
+            BACKEND_PID=$!
+            echo "✅ Backend running with PID: $BACKEND_PID" >> output.txt
+            kill $BACKEND_PID 2>/dev/null || true
+
+          else
+            echo "❌ Unknown command: $COMMAND" > output.txt
+            echo "Supported commands: status, sync, deploy" >> output.txt
+          fi
+
+          cat output.txt
+
+      - name: Create issue with result
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let output = '';
+            try {
+              output = fs.readFileSync('output.txt', 'utf8');
+            } catch (e) {
+              output = '⚠️ No output generated.';
+            }
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🧠 Horizon Orchestrator: ${{ github.event.inputs.command }}`,
+              body: `**Result:**\n\`\`\`\n${output}\n\`\`\``
+            });
+            console.log(`✅ Issue #${issue.data.number} created.`);
+
+      - name: Push changes (if any)
+        if: github.event.inputs.command == 'sync'
+        run: |
+          git config user.name "Horizon Orchestrator"
+          git config user.email "orchestrator@beaconchain.us"
+          git add .
+          git commit -m "🔄 Synced frontend files from core" || echo "No changes to commit"
+          git push origin mine || echo "Push failed"
