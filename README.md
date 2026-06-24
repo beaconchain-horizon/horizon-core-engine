@@ -1,7 +1,6 @@
-Beaconchain
 # Horizon Core Engine
 
-Offline‑first, API‑based blockchain validator and license manager.  
+**Offline‑first, API‑based blockchain validator and license manager.**  
 Built with Go, SQLite, Merkle trees, and ECDSA signatures.
 
 ## Features
@@ -15,7 +14,8 @@ Built with Go, SQLite, Merkle trees, and ECDSA signatures.
 ## Quick Start
 
 ```bash
-git clone https://github.com/Beaconchain-us/horizon-core-engine
+git clone -b mine https://github.com/beaconchain-horizon/horizon-core-engine
 cd horizon-core-engine
 cp .env.example .env
-go run cmd/api/main.go
+go mod tidy
+go run cmd/main.go
