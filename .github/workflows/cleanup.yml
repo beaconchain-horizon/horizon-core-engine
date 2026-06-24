@@ -1,0 +1,53 @@
+name: Cleanup Repository
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Remove duplicate files
+        run: |
+          echo "🔍 Removing duplicate files..."
+          find . -name "*.html" -type f | while read file; do
+            if [[ "$file" == *"/index copy.html"* ]] || \
+               [[ "$file" == *"/index_old.html"* ]] || \
+               [[ "$file" == *"/index_backup.html"* ]]; then
+              echo "  🗑️ Removing: $file"
+              rm -f "$file"
+            fi
+          done
+
+      - name: Remove temporary files
+        run: |
+          echo "🔍 Removing temporary files..."
+          rm -rf .tmp .cache .swp *.log 2>/dev/null || true
+
+      - name: Remove empty directories
+        run: |
+          echo "🔍 Removing empty directories..."
+          find . -type d -empty -delete 2>/dev/null || true
+
+      - name: Ensure mine branch exists
+        run: |
+          echo "🔍 Ensuring mine branch exists..."
+          git checkout mine 2>/dev/null || git checkout -b mine
+
+      - name: Remove extra branches (main, master)
+        run: |
+          echo "🔍 Removing extra branches..."
+          git branch -d main 2>/dev/null || true
+          git branch -d master 2>/dev/null || true
+
+      - name: Push changes
+        run: |
+          echo "🔍 Pushing changes to remote..."
+          git push -u origin mine --force 2>/dev/null || echo "⚠️ Push failed, continuing..."
