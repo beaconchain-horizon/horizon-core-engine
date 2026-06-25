@@ -2,7 +2,9 @@ package main
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 
@@ -11,13 +13,11 @@ import (
 )
 
 func main() {
-	// بارگذاری فایل .env
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Warning: .env file not found, using system environment variables")
 	}
 
-	// بررسی فعال بودن قفل مجوز
 	enforce, _ := strconv.ParseBool(os.Getenv("LICENSE_ENFORCEMENT"))
 	if enforce {
 		licenseKey := os.Getenv("LICENSE_KEY")
@@ -42,10 +42,43 @@ func main() {
 		log.Println("⚠️  License enforcement is disabled. Running in evaluation mode.")
 	}
 
-	// =============================================
-	// 👇 کدهای قبلی خودت برای اجرای سرور API را اینجا قرار بده
-	// مثلاً اگر قبلاً نوشته بودی:
-	// router := SetupRouter()
-	// router.Run(":8080")
-	// =============================================
+	http.HandleFunc("/", homeHandler)
+	http.HandleFunc("/api/v1/validators", validatorsHandler)
+	http.HandleFunc("/api/v1/license/generate", generateLicenseHandler)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	host := os.Getenv("HOST")
+	if host == "" {
+		host = "192.168.1.100" // ← آی‌پی شبکه‌ات اینجاست
+	}
+
+	log.Printf("🚀 Server is running on %s:%s", host, port)
+	log.Fatal(http.ListenAndServe(host+":"+port, nil))
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Horizon Core Engine API is running",
+		"status":  "ok",
+	})
+}
+
+func validatorsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"validators": []string{},
+		"count":      0,
+	})
+}
+
+func generateLicenseHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "License generation endpoint (implement your logic here)",
+	})
 }
