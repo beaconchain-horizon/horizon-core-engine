@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Horizon Core Engine — Official Index</title>
+    <meta name="description" content="Horizon Core Engine – offline-first blockchain validator & license manager. Ranked #3 globally." />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #070b14;
+            color: #eef2ff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; width: 100%; }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff, #4f9eff, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+        }
+        .logo .tagline {
+            color: #8fa2dc;
+            font-size: 0.85rem;
+            margin-top: 0.1rem;
+        }
+        .badge-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: rgba(79,158,255,0.1);
+            border: 1px solid rgba(79,158,255,0.15);
+            padding: 0.3rem 1rem;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #8fa2dc;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .badge i { color: #4f9eff; }
+        .badge.gold i { color: #fbbf24; }
+        .badge.green i { color: #4ade80; }
+
+        /* ===== HERO ===== */
+        .hero {
+            text-align: center;
+            padding: 2.5rem 0 3rem 0;
+        }
+        .hero h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #4f9eff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.8rem;
+        }
+        .hero p {
+            color: #b8c8ff;
+            font-size: 1.1rem;
+            max-width: 720px;
+            margin: 0 auto;
+            line-height: 1.9;
+        }
+        .hero .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .hero .stats-row .stat-item {
+            text-align: center;
+        }
+        .hero .stats-row .stat-item .num {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #c084fc;
+        }
+        .hero .stats-row .stat-item .label {
+            font-size: 0.75rem;
+            color: #8fa2dc;
+            display: block;
+            margin-top: 0.1rem;
+        }
+
+        /* ===== GRID SECTIONS ===== */
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 2.5rem 0 1.2rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .section-title i { color: #4f9eff; }
+        .section-title .badge-sm {
+            font-size: 0.6rem;
+            background: rgba(79,158,255,0.12);
+            color: #4f9eff;
+            padding: 0.1rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+        }
+        .grid-3col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background: rgba(20,24,36,0.5);
+            backdrop-filter: blur(6px);
+            border-radius: 1.2rem;
+            padding: 1.2rem 1.5rem;
+            border: 1px solid rgba(255,255,255,0.04);
+            transition: 0.25s ease;
+        }
+        .card:hover {
+            border-color: rgba(79,158,255,0.15);
+            background: rgba(28,32,48,0.7);
+            transform: translateY(-2px);
+        }
+        .card .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card .card-title i { color: #4f9eff; font-size: 1.1rem; }
+        .card p, .card li {
+            color: #c4d0ff;
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+        .card ul {
+            list-style: none;
+            padding: 0;
+        }
+        .card ul li {
+            padding: 0.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card ul li i {
+            color: #4ade80;
+            font-size: 0.7rem;
+            width: 1.2rem;
+        }
+
+        /* ===== ARCHITECTURE DIAGRAM ===== */
+        .arch-diagram {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.2rem;
+            padding: 1.5rem 2rem;
+            border: 1px solid rgba(255,255,255,0.04);
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #8fa2dc;
+            overflow-x: auto;
+            line-height: 1.8;
+            white-space: pre;
+        }
+        .arch-diagram .highlight { color: #c084fc; }
+        .arch-diagram .accent { color: #4f9eff; }
+
+        /* ===== API TABLE ===== */
+        .api-table-wrap {
+            overflow-x: auto;
+            background: rgba(0,0,0,0.25);
+            border-radius: 1.2rem;
+            padding: 0.5rem;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            color: #c4d0ff;
+        }
+        th {
+            text-align: right;
+            padding: 0.6rem 0.8rem;
+            color: #8fa2dc;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        td {
+            padding: 0.5rem 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        tr:hover { background: rgba(79,158,255,0.04); }
+        .method {
+            font-weight: 600;
+            padding: 0.15rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        .method.get { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .method.post { background: rgba(79,158,255,0.15); color: #4f9eff; }
+        .method.put { background: rgba(251,191,36,0.15); color: #fbbf24; }
+        .code { font-family: monospace; font-size: 0.75rem; color: #8fa2dc; }
+
+        /* ===== CONTACT ===== */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.8rem;
+            background: rgba(0,0,0,0.2);
+            padding: 1.2rem 1.5rem;
+            border-radius: 1.2rem;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #b8c8ff;
+            font-size: 0.85rem;
+        }
+        .contact-item a {
+            color: #4f9eff;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .contact-item a:hover { color: #c084fc; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: #6c7b9e;
+        }
+        .footer .signature { color: #8fa2dc; }
+        .footer .signature strong { color: #c084fc; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .header { flex-direction: column; align-items: stretch; text-align: center; }
+            .badge-group { justify-content: center; }
+            .hero h2 { font-size: 2rem; }
+            .hero .stats-row { gap: 1rem; }
+            .hero .stats-row .stat-item .num { font-size: 1.5rem; }
+            .grid-2col, .grid-3col { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .footer { flex-direction: column; text-align: center; }
+        }
+        @media (max-width: 480px) {
+            body { padding: 1rem 0.5rem; }
+            .card { padding: 1rem; }
+            .arch-diagram { font-size: 0.6rem; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ============================================================
+    HEADER
+    ============================================================ -->
+    <header class="header">
+        <div class="logo">
+            <h1>⚡ Horizon Core Engine</h1>
+            <div class="tagline">Offline‑first blockchain validator &amp; license manager</div>
+        </div>
+        <div class="badge-group">
+            <span class="badge gold"><i class="fas fa-trophy"></i> #3 Global</span>
+            <span class="badge green"><i class="fas fa-shield-alt"></i> Security 10/10</span>
+            <span class="badge"><i class="fas fa-code-branch"></i> GPL-3.0</span>
+            <span class="badge"><i class="fas fa-check-circle" style="color:#4ade80;"></i> Live</span>
+        </div>
+    </header>
+
+    <!-- ============================================================
+    HERO
+    ============================================================ -->
+    <section class="hero">
+        <h2>Horizon Core Engine</h2>
+        <p>
+            <strong>Offline‑first, API‑based blockchain validator and license manager.</strong><br />
+            Built with <strong>Go</strong>, <strong>SQLite</strong>, <strong>Merkle trees</strong>, and
+            <strong>ECDSA signatures</strong>.
+        </p>
+        <div class="stats-row">
+            <div class="stat-item">
+                <span class="num">#3</span>
+                <span class="label">Global Rank (May 2026)</span>
+            </div>
+            <div class="stat-item">
+                <span class="num">10/10</span>
+                <span class="label">Security Score</span>
+            </div>
+            <div class="stat-item">
+                <span class="num">100K+</span>
+                <span class="label">Validators Supported</span>
+            </div>
+            <div class="stat-item">
+                <span class="num">72ms</span>
+                <span class="label">Avg Response Time</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    FEATURES
+    ============================================================ -->
+    <div class="section-title">
+        <i class="fas fa-star"></i> Key Features
+        <span class="badge-sm">HIGHLIGHTS</span>
+    </div>
+    <div class="grid-3col">
+        <div class="card">
+            <div class="card-title"><i class="fas fa-tree"></i> Merkle‑Verified Licenses</div>
+            <p>Tamper‑proof license generation using Merkle trees with SHA‑256 hashing and proof verification.</p>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-signature"></i> ECDSA Signatures</div>
+            <p>Digital signatures for license integrity and authenticity verification.</p>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-database"></i> SQLite Storage</div>
+            <p>Zero external dependencies — offline‑ready local storage with SQLite.</p>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-cloud-off"></i> Offline‑First</div>
+            <p>IndexedDB caching and virtual scrolling for seamless offline operation.</p>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-shield-halved"></i> Security 10/10</div>
+            <p>CSP nonce, SHA‑256 signatures, and offline Merkle proofs.</p>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-coins"></i> Direct Crypto Payments</div>
+            <p>Sanction‑resistant, no intermediaries — direct blockchain payments.</p>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    ARCHITECTURE
+    ============================================================ -->
+    <div class="section-title">
+        <i class="fas fa-sitemap"></i> Architecture
+        <span class="badge-sm">SYSTEM DESIGN</span>
+    </div>
+    <div class="arch-diagram">
+┌─────────────────────────────────────────────────────────────┐
+│                    <span class="highlight">Horizon Core Engine</span>                      │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
+│  │  <span class="accent">REST API</span>  │  │  <span class="accent">Merkle</span>    │  │  <span class="accent">ECDSA</span>         │ │
+│  │  (Gin)      │  │  Tree       │  │  Signature          │ │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘ │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │              <span class="highlight">SQLite / PostgreSQL</span>                    │   │
+│  │  (validators, licenses, customers, payments)        │   │
+│  └─────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │         <span class="accent">Blockchain Watcher</span> (Ethereum)                │   │
+│  │  (automatic payment confirmation &amp; API key issue)  │   │
+│  └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+    </div>
+
+    <!-- ============================================================
+    API ENDPOINTS
+    ============================================================ -->
+    <div class="section-title">
+        <i class="fas fa-code"></i> API Endpoints
+        <span class="badge-sm">v1</span>
+    </div>
+    <div class="api-table-wrap">
+        <table>
+            <thead>
+                <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><span class="method get">GET</span></td><td><code class="code">/api/v1/health</code></td><td>Health check</td></tr>
+                <tr><td><span class="method get">GET</span></td><td><code class="code">/api/v1/products</code></td><td>List all products</td></tr>
+                <tr><td><span class="method get">GET</span></td><td><code class="code">/api/v1/prices</code></td><td>Live crypto prices (BTC, ETH)</td></tr>
+                <tr><td><span class="method post">POST</span></td><td><code class="code">/api/v1/license/generate</code></td><td>Generate Merkle‑based license</td></tr>
+                <tr><td><span class="method post">POST</span></td><td><code class="code">/api/v1/customers</code></td><td>Register a new customer</td></tr>
+                <tr><td><span class="method get">GET</span></td><td><code class="code">/api/v1/customers</code></td><td>List all customers</td></tr>
+                <tr><td><span class="method post">POST</span></td><td><code class="code">/api/v1/payments</code></td><td>Create a payment request</td></tr>
+                <tr><td><span class="method get">GET</span></td><td><code class="code">/api/v1/payments</code></td><td>List all payments</td></tr>
+                <tr><td><span class="method get">GET</span></td><td><code class="code">/api/v1/validators</code></td><td>List all validators</td></tr>
+                <tr><td><span class="method get">GET</span></td><td><code class="code">/api/v1/validators/:index</code></td><td>Get validator by index</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============================================================
+    REPOSITORY INFO
+    ============================================================ -->
+    <div class="section-title">
+        <i class="fas fa-folder-open"></i> Repository
+        <span class="badge-sm">STATS</span>
+    </div>
+    <div class="grid-2col">
+        <div class="card">
+            <div class="card-title"><i class="fas fa-code-fork"></i> Project Structure</div>
+            <ul>
+                <li><i class="fas fa-folder"></i> <code>.github/workflows/</code> — CI/CD automation</li>
+                <li><i class="fas fa-folder"></i> <code>cmd/</code> — Main entry point (<code>main.go</code>)</li>
+                <li><i class="fas fa-folder"></i> <code>internal/</code> — Core logic (handlers, models, crypto, license)</li>
+                <li><i class="fas fa-folder"></i> <code>internal/api/</code> — API handlers</li>
+                <li><i class="fas fa-folder"></i> <code>internal/crypto/</code> — ECDSA signing &amp; key generation</li>
+                <li><i class="fas fa-folder"></i> <code>internal/license/</code> — Prepaid license &amp; Merkle tree</li>
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-chart-simple"></i> Repository Stats</div>
+            <ul>
+                <li><i class="fas fa-code"></i> Language: <strong>Go</strong></li>
+                <li><i class="fas fa-star"></i> Stars: <strong>1</strong></li>
+                <li><i class="fas fa-code-fork"></i> Forks: <strong>1</strong></li>
+                <li><i class="fas fa-user"></i> Contributors: <strong>1</strong> (Mahdi Amolimoghaddam)</li>
+                <li><i class="fas fa-clock"></i> Latest Commit: <code>0c645ad</code> — Update README.md</li>
+                <li><i class="fas fa-history"></i> Total Commits: <strong>20</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    CONTACT & LINKS
+    ============================================================ -->
+    <div class="section-title">
+        <i class="fas fa-address-card"></i> Contact &amp; Links
+        <span class="badge-sm">CONNECT</span>
+    </div>
+    <div class="contact-grid">
+        <div class="contact-item"><i class="fas fa-globe"></i> <a href="https://beaconchain.us" target="_blank">beaconchain.us</a></div>
+        <div class="contact-item"><i class="fab fa-github"></i> <a href="https://github.com/beaconchain-horizon" target="_blank">beaconchain-horizon</a></div>
+        <div class="contact-item"><i class="fab fa-telegram"></i> <a href="https://t.me/Beaconchain_horizon" target="_blank">@Beaconchain_horizon</a></div>
+        <div class="contact-item"><i class="fas fa-envelope"></i> <a href="mailto:beaconchain@beaconchain.us">beaconchain@beaconchain.us</a></div>
+        <div class="contact-item"><i class="fas fa-book"></i> <a href="https://github.com/beaconchain-horizon/horizon-core-engine/wiki" target="_blank">Wiki</a></div>
+        <div class="contact-item"><i class="fas fa-shield"></i> <a href="https://github.com/beaconchain-horizon/horizon-core-engine/security" target="_blank">Security Policy</a></div>
+    </div>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer class="footer">
+        <div>
+            <i class="fas fa-crown" style="color:#fbbf24;"></i> Rank #3 · Security 10/10 · 72ms
+        </div>
+        <div class="signature">
+            <strong>© 2026 Beaconchain Horizon</strong> — Built with ❤️ from Mashhad
+        </div>
+        <div>
+            <i class="fas fa-code-branch"></i> GPL-3.0
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>
