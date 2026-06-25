@@ -1,33 +1,51 @@
 package main
 
 import (
+	"encoding/hex"
 	"log"
-	"net/http"
 	"os"
+	"strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/beaconchain-horizon/horizon-core-engine/internal/license"
 	"github.com/joho/godotenv"
-
-	"horizon-core-engine/internal/api"
-	"horizon-core-engine/internal/db"
 )
 
 func main() {
-	godotenv.Load()
-
-	port := os.Getenv("SERVER_PORT")
-	if port == "" {
-		port = "8080"
+	// بارگذاری فایل .env
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Warning: .env file not found, using system environment variables")
 	}
 
-	if err := db.InitDB(); err != nil {
-		log.Fatal("DB init failed:", err)
+	// بررسی فعال بودن قفل مجوز
+	enforce, _ := strconv.ParseBool(os.Getenv("LICENSE_ENFORCEMENT"))
+	if enforce {
+		licenseKey := os.Getenv("LICENSE_KEY")
+		publicKeyHex := os.Getenv("LICENSE_PUBLIC_KEY")
+
+		if licenseKey == "" || publicKeyHex == "" {
+			log.Fatal("LICENSE_KEY and LICENSE_PUBLIC_KEY are required when LICENSE_ENFORCEMENT is true")
+		}
+
+		publicKeyBytes, err := hex.DecodeString(publicKeyHex)
+		if err != nil {
+			log.Fatalf("Invalid PUBLIC_KEY format: %v", err)
+		}
+
+		valid, err := license.VerifyLicense(licenseKey, publicKeyBytes)
+		if err != nil || !valid {
+			log.Fatal("Invalid or unauthorized license key. Commercial use requires a valid license.")
+		}
+
+		log.Println("✅ License verification passed. Starting Horizon Core API...")
+	} else {
+		log.Println("⚠️  License enforcement is disabled. Running in evaluation mode.")
 	}
-	defer db.Close()
 
-	r := mux.NewRouter()
-	api.RegisterRoutes(r)
-
-	log.Printf("Horizon Core Engine running on :%s", port)
-	log.Fatal(http.ListenAndServe(":"+port, r))
+	// =============================================
+	// 👇 کدهای قبلی خودت برای اجرای سرور API را اینجا قرار بده
+	// مثلاً اگر قبلاً نوشته بودی:
+	// router := SetupRouter()
+	// router.Run(":8080")
+	// =============================================
 }
