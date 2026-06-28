@@ -1,0 +1,39 @@
+# Environment variables (never commit)
+.env
+.env.local
+.env.*.local
+
+# Database files
+*.db
+*.sqlite
+horizon.db
+
+# Logs
+*.log
+
+# Build artifacts
+horizon-api
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go workspace
+vendor/
+go.sum
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
