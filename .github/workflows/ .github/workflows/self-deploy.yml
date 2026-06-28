@@ -1,0 +1,49 @@
+name: 🚀 Horizon Self-Deploy (No External Services)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: 📥 Checkout core
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🐍 Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: 📦 Install dependencies
+        run: go mod tidy
+
+      - name: 🔨 Build backend binary
+        run: |
+          go build -o horizon-api ./cmd/main.go
+          chmod +x horizon-api
+
+      - name: 📤 Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: horizon-api-binary
+          path: horizon-api
+
+      - name: 📝 Create summary issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '✅ Horizon Self-Deploy Complete',
+              body: `**Horizon backend built successfully!**\n\n## 🔗 Download Binary\n- Download from Actions → Artifacts → \`horizon-api-binary\`\n\n## 🧠 How to Run\n\`\`\`bash\nchmod +x horizon-api\n./horizon-api\n\`\`\`\n\nAPI will be available at \`http://localhost:8080/api/v1/\``
+            });
+            console.log(`✅ Issue #${issue.data.number} created.`);
