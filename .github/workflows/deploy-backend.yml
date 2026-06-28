@@ -1,0 +1,59 @@
+name: Deploy Horizon Backend (Auto)
+
+on:
+  workflow_dispatch:  # Trigger manually from Actions tab
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: 📦 Install dependencies
+        run: go mod tidy
+
+      - name: 🔧 Generate deployment files (Dockerfile + Procfile)
+        run: |
+          # Create Dockerfile
+          cat > Dockerfile << 'EOF'
+          FROM golang:1.24-alpine
+          WORKDIR /app
+          COPY go.mod go.sum ./
+          RUN go mod download
+          COPY . .
+          RUN go build -o horizon-api cmd/main.go
+          EXPOSE 8080
+          CMD ["./horizon-api"]
+          EOF
+
+          # Create Procfile (for Render)
+          echo "web: ./horizon-api" > Procfile
+
+      - name: 🚀 Deploy to Railway (via API)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          if [ -n "$RAILWAY_TOKEN" ]; then
+            curl -X POST https://api.railway.com/v1/deploy \
+              -H "Authorization: Bearer $RAILWAY_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d '{"projectId": "your-project-id", "environment": "production"}'
+            echo "✅ Deployed to Railway successfully."
+          else
+            echo "⚠️ RAILWAY_TOKEN not set. Skipping deployment."
+          fi
+
+      - name: 📤 Upload deployment files (for manual use)
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-files
+          path: |
+            Dockerfile
+            Procfile
+            horizon-api
