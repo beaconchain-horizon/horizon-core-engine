@@ -19,16 +19,36 @@ jobs:
           path: store
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: 🔗 Update store API URL
+      - name: 🔗 Update store
         run: |
           cd store
+          # تغییر آدرس API
           sed -i 's|const API_BASE_URL = .*|const API_BASE_URL = "http://localhost:8080/api/v1";|g' index.html
+          # نمایش تغییرات
+          git status
+          git diff
 
-      - name: 📤 Commit and push changes
+      - name: 📤 Commit and push
         run: |
           cd store
           git config user.name "Horizon Bot"
           git config user.email "bot@beaconchain.us"
           git add index.html
-          git commit -m "feat: connect store to backend" || echo "No changes to commit"
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "feat: connect store to backend"
           git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/beaconchain-horizon/Beaconchain.us.git mine
+
+      - name: 📝 Create summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '✅ Store connected to backend!',
+              body: 'Store updated successfully. Run backend and test.'
+            });
+            console.log(`✅ Issue #${issue.data.number} created.`);
