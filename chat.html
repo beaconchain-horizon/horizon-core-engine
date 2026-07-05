@@ -1,506 +1,265 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Horizon AI · Core Chat</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a0f;
-            color: #e5e7eb;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .app-container {
-            max-width: 480px;
-            width: 100%;
-            background: #14141c;
-            border-radius: 32px;
-            padding: 24px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
-            border: 1px solid #2a2a35;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #7c3aed, #4f46e5);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .logo-text {
-            font-size: 18px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #a78bfa, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .logo-text small {
-            font-size: 11px;
-            font-weight: 400;
-            -webkit-text-fill-color: #6b7280;
-            display: block;
-            margin-top: -2px;
-        }
-        .header-right {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .badge-pro {
-            background: #7c3aed;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #fff;
-            letter-spacing: 0.3px;
-        }
-        .icon-btn {
-            background: none;
-            border: none;
-            color: #6b7280;
-            font-size: 20px;
-            cursor: pointer;
-            transition: 0.2s;
-            padding: 4px;
-        }
-        .icon-btn:hover { color: #a78bfa; }
-        .daily-box {
-            background: #1e1e2a;
-            border-radius: 16px;
-            padding: 16px 18px;
-            margin-bottom: 20px;
-            border: 1px solid #2a2a3a;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .daily-box .label {
-            font-size: 13px;
-            color: #9ca3af;
-        }
-        .daily-box .label strong { color: #f59e0b; }
-        .daily-box .timer {
-            font-size: 18px;
-            font-weight: 700;
-            color: #f59e0b;
-            font-variant-numeric: tabular-nums;
-            letter-spacing: 1px;
-        }
-        .model-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        .model-btn {
-            background: #1a1a26;
-            border: 1px solid #2a2a3a;
-            border-radius: 12px;
-            padding: 10px 12px;
-            color: #9ca3af;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            text-align: center;
-            font-family: inherit;
-        }
-        .model-btn:hover {
-            border-color: #4f46e5;
-            color: #e5e7eb;
-        }
-        .model-btn.active {
-            border-color: #7c3aed;
-            background: #1e1e32;
-            color: #a78bfa;
-            box-shadow: 0 0 20px rgba(124,58,237,0.1);
-        }
-        .model-btn .sub {
-            display: block;
-            font-size: 10px;
-            font-weight: 400;
-            color: #6b7280;
-            margin-top: 2px;
-        }
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px 10px;
-            margin-bottom: 18px;
-            padding: 12px 0;
-            border-top: 1px solid #1e1e2a;
-            border-bottom: 1px solid #1e1e2a;
-        }
-        .features span {
-            font-size: 12px;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .features span::before {
-            content: "✓";
-            color: #7c3aed;
-            font-weight: 700;
-        }
-        .upgrade-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #7c3aed, #4f46e5);
-            border: none;
-            border-radius: 14px;
-            padding: 14px;
-            color: #fff;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-bottom: 20px;
-            font-family: inherit;
-            letter-spacing: 0.3px;
-        }
-        .upgrade-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 30px rgba(124,58,237,0.3);
-        }
-        .chat-box {
-            background: #0e0e16;
-            border-radius: 16px;
-            padding: 16px;
-            height: 280px;
-            overflow-y: auto;
-            margin-bottom: 14px;
-            border: 1px solid #1e1e2a;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .chat-box::-webkit-scrollbar { width: 4px; }
-        .chat-box::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 10px; }
-        .msg {
-            max-width: 88%;
-            padding: 10px 14px;
-            border-radius: 16px;
-            font-size: 14px;
-            line-height: 1.6;
-            word-wrap: break-word;
-            animation: fadeIn 0.3s ease;
-        }
-        .msg.user {
-            align-self: flex-end;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            color: #fff;
-            border-bottom-right-radius: 4px;
-        }
-        .msg.ai {
-            align-self: flex-start;
-            background: #1a1a26;
-            color: #d1d5db;
-            border-bottom-left-radius: 4px;
-            border: 1px solid #2a2a3a;
-        }
-        .msg.ai .label {
-            font-size: 10px;
-            color: #6b7280;
-            display: block;
-            margin-bottom: 4px;
-        }
-        .typing-dots {
-            align-self: flex-start;
-            background: #1a1a26;
-            padding: 10px 18px;
-            border-radius: 20px;
-            display: flex;
-            gap: 5px;
-            border: 1px solid #2a2a3a;
-        }
-        .typing-dots span {
-            width: 8px;
-            height: 8px;
-            background: #7c3aed;
-            border-radius: 50%;
-            animation: bounce 1.2s infinite;
-        }
-        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes bounce {
-            0%,60%,100% { transform: translateY(0); }
-            30% { transform: translateY(-8px); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .input-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .input-row input {
-            flex: 1;
-            background: #0e0e16;
-            border: 1px solid #2a2a3a;
-            border-radius: 14px;
-            padding: 12px 16px;
-            color: #e5e7eb;
-            font-size: 14px;
-            outline: none;
-            transition: 0.2s;
-            font-family: inherit;
-        }
-        .input-row input:focus {
-            border-color: #7c3aed;
-            box-shadow: 0 0 20px rgba(124,58,237,0.05);
-        }
-        .input-row input::placeholder { color: #4a4a5a; }
-        .input-row .send-btn {
-            background: linear-gradient(135deg, #7c3aed, #4f46e5);
-            border: none;
-            border-radius: 14px;
-            padding: 12px 20px;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            font-family: inherit;
-            font-size: 14px;
-            white-space: nowrap;
-        }
-        .input-row .send-btn:hover { transform: scale(1.04); }
-        .input-row .send-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .input-row .attach-btn {
-            background: none;
-            border: none;
-            color: #4a4a5a;
-            font-size: 22px;
-            cursor: pointer;
-            transition: 0.2s;
-            padding: 8px;
-        }
-        .input-row .attach-btn:hover { color: #a78bfa; }
-        @media (max-width: 420px) {
-            .app-container { padding: 16px; }
-            .model-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
-            .model-btn { font-size: 12px; padding: 8px 10px; }
-            .daily-box { flex-direction: column; align-items: flex-start; gap: 6px; }
-            .daily-box .timer { font-size: 16px; }
-            .chat-box { height: 200px; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Horizon AI Chat</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(circle at 20% 30%, #0b0e1a, #03050c);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem;
+    }
+    .chat-container {
+      max-width: 900px;
+      width: 100%;
+      height: 90vh;
+      max-height: 750px;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+    }
+    .chat-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-header h2 {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .chat-header h2 span {
+      background: #7a8cff;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+    .chat-header small {
+      color: rgba(255,255,255,0.3);
+      font-size: 0.8rem;
+    }
+    .messages {
+      flex: 1;
+      padding: 1.8rem 2rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      background: rgba(0,0,0,0.2);
+    }
+    .message {
+      max-width: 80%;
+      padding: 0.9rem 1.4rem;
+      border-radius: 1.8rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      word-wrap: break-word;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #7a8cff, #5a6ee0);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .ai {
+      align-self: flex-start;
+      background: rgba(255,255,255,0.07);
+      color: #e5e7f0;
+      border-bottom-left-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    .ai .label {
+      font-size: 0.65rem;
+      opacity: 0.4;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .typing-indicator {
+      align-self: flex-start;
+      background: rgba(255,255,255,0.05);
+      padding: 0.8rem 1.6rem;
+      border-radius: 2rem;
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      background: #7a8cff;
+      border-radius: 50%;
+      display: inline-block;
+      animation: bounce 1.2s infinite;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-8px); } }
+    .input-area {
+      padding: 1.2rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      display: flex;
+      gap: 0.8rem;
+      background: rgba(0,0,0,0.2);
+    }
+    .input-area input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 40px;
+      padding: 0.9rem 1.6rem;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: 0.2s;
+    }
+    .input-area input:focus { border-color: #7a8cff; background: rgba(255,255,255,0.08); }
+    .input-area input::placeholder { color: rgba(255,255,255,0.25); }
+    .input-area button {
+      background: linear-gradient(135deg, #7a8cff, #5a6ee0);
+      border: none;
+      border-radius: 40px;
+      padding: 0 2rem;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.95rem;
+    }
+    .input-area button:hover { transform: scale(1.03); box-shadow: 0 8px 30px rgba(90,110,224,0.3); }
+    .input-area button:disabled { opacity: 0.4; cursor: not-allowed; }
+    @media (max-width: 600px) {
+      .chat-container { border-radius: 1.5rem; height: 95vh; }
+      .message { max-width: 90%; font-size: 0.9rem; }
+      .input-area { padding: 0.8rem 1rem; flex-wrap: wrap; }
+      .input-area input { width: 100%; }
+      .input-area button { width: 100%; padding: 0.8rem; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="app-container">
-
-    <div class="header">
-        <div class="header-left">
-            <div class="logo-icon">H</div>
-            <div class="logo-text">
-                Horizon AI
-                <small>Core Chat</small>
-            </div>
-        </div>
-        <div class="header-right">
-            <span class="badge-pro">● BETA</span>
-            <button class="icon-btn" id="settingsBtn">⚙</button>
-        </div>
+<div class="chat-container">
+  <div class="chat-header">
+    <h2><span></span> Horizon AI</h2>
+    <small>DeepSeek · آنلاین</small>
+  </div>
+  <div class="messages" id="messageBox">
+    <div class="message ai">
+      <span class="label">🤖 Horizon AI</span>
+      سلام! من دستیار هوش مصنوعی هورایزن هستم. هر سوالی داری، بپرس.
     </div>
-
-    <div class="daily-box">
-        <span class="label">🚀 <strong>رایگان</strong> · سهمیه روزانه</span>
-        <span class="timer" id="timerDisplay">∞</span>
-    </div>
-
-    <div class="model-grid">
-        <button class="model-btn active" data-model="llama">
-            🧠 Horizon Core
-            <span class="sub">Engine · 7B</span>
-        </button>
-        <button class="model-btn" data-model="gemini">
-            ⚡ Gemini
-            <span class="sub">Multimodal</span>
-        </button>
-        <button class="model-btn" data-model="claude">
-            🎯 Claude
-            <span class="sub">Balanced</span>
-        </button>
-        <button class="model-btn" data-model="grok">
-            💡 Grok
-            <span class="sub">Creative</span>
-        </button>
-    </div>
-
-    <div class="features">
-        <span>پیام‌های نامحدود</span>
-        <span>تولید و ویرایش تصویر</span>
-        <span>حالت تفکر عمیق</span>
-        <span>سرعت اولویت‌دار</span>
-    </div>
-
-    <button class="upgrade-btn" id="upgradeBtn">✨ دریافت دسترسی PRO</button>
-
-    <div class="chat-box" id="chatBox">
-        <div class="msg ai">
-            <span class="label">🧠 Horizon Core</span>
-            سلام! من هسته هوش مصنوعی Horizon هستم. هر سوالی داری، بپرس.
-        </div>
-    </div>
-
-    <div class="input-row">
-        <button class="attach-btn" id="attachBtn">📎</button>
-        <input type="text" id="userInput" placeholder="پیام خود را بنویسید ..." />
-        <button class="send-btn" id="sendBtn">➤</button>
-    </div>
-
+  </div>
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="سوال یا دستورت رو اینجا بنویس..." />
+    <button id="sendBtn">ارسال</button>
+  </div>
 </div>
 
 <script>
-    // ─── Horizon Core Chat Engine ───────────────────────────────
+  // 🔑 کلید خودت رو اینجا بذار
+  const DEEPSEEK_KEY = "sk-YourRealKeyHere"; 
 
-    const chatBox = document.getElementById('chatBox');
-    const userInput = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const timerDisplay = document.getElementById('timerDisplay');
+  const messageBox = document.getElementById("messageBox");
+  const userInput = document.getElementById("userInput");
+  const sendBtn = document.getElementById("sendBtn");
 
-    let currentModel = 'llama';
+  function addMessage(text, sender) {
+    const div = document.createElement("div");
+    div.className = `message ${sender}`;
+    if (sender === "ai") {
+      div.innerHTML = `<span class="label">🤖 Horizon AI</span>${text}`;
+    } else {
+      div.textContent = text;
+    }
+    messageBox.appendChild(div);
+    messageBox.scrollTop = messageBox.scrollHeight;
+  }
 
-    document.querySelectorAll('.model-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentModel = btn.dataset.model;
-            addMessage('ai', `🧠 سوئیچ به ${btn.textContent.trim()}`, true);
-        });
-    });
+  function showTyping() {
+    const div = document.createElement("div");
+    div.className = "typing-indicator";
+    div.id = "typingDots";
+    div.innerHTML = "<span></span><span></span><span></span>";
+    messageBox.appendChild(div);
+    messageBox.scrollTop = messageBox.scrollHeight;
+  }
 
-    document.getElementById('attachBtn').addEventListener('click', () => {
-        addMessage('ai', '📎 قابلیت آپلود فایل و تصویر به زودی در نسخهٔ PRO فعال می‌شود.', true);
-    });
+  function hideTyping() {
+    const dots = document.getElementById("typingDots");
+    if (dots) dots.remove();
+  }
 
-    document.getElementById('upgradeBtn').addEventListener('click', () => {
-        addMessage('ai', '✨ نسخهٔ PRO به زودی با مدل‌های بیشتر و سرعت بالاتر ارائه می‌شود.', true);
-    });
+  async function sendMessage() {
+    const text = userInput.value.trim();
+    if (!text) return;
 
-    document.getElementById('settingsBtn').addEventListener('click', () => {
-        addMessage('ai', '⚙️ تنظیمات: زبان فارسی · حالت شب · خروجی Markdown', true);
-    });
+    sendBtn.disabled = true;
+    userInput.disabled = true;
+    addMessage(text, "user");
+    userInput.value = "";
+    showTyping();
 
-    function addMessage(role, text, isSystem = false) {
-        const div = document.createElement('div');
-        div.className = `msg ${role}`;
-        if (role === 'ai') {
-            const label = document.createElement('span');
-            label.className = 'label';
-            label.textContent = isSystem ? '⚙️ Horizon' : '🧠 Horizon Core';
-            div.appendChild(label);
-            const p = document.createElement('span');
-            p.textContent = text;
-            div.appendChild(p);
-        } else {
-            div.textContent = text;
-        }
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
+    try {
+      const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${DEEPSEEK_KEY}`
+        },
+        body: JSON.stringify({
+          model: "deepseek-chat",
+          messages: [
+            { role: "system", content: "تو یک دستیار فارسی‌زبان و حرفه‌ای هستی." },
+            { role: "user", content: text }
+          ],
+          stream: false
+        })
+      });
+
+      const data = await response.json();
+      hideTyping();
+
+      if (data.choices && data.choices[0]) {
+        addMessage(data.choices[0].message.content, "ai");
+      } else {
+        addMessage("خطا: پاسخی دریافت نشد.", "ai");
+      }
+    } catch (error) {
+      hideTyping();
+      addMessage("خطا در ارتباط با سرور.", "ai");
+      console.error(error);
     }
 
-    function showTyping() {
-        const div = document.createElement('div');
-        div.className = 'typing-dots';
-        div.id = 'typingDots';
-        div.innerHTML = '<span></span><span></span><span></span>';
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
+    sendBtn.disabled = false;
+    userInput.disabled = false;
+    userInput.focus();
+  }
 
-    function hideTyping() {
-        const el = document.getElementById('typingDots');
-        if (el) el.remove();
-    }
-
-    async function sendMessage() {
-        const text = userInput.value.trim();
-        if (!text) return;
-
-        sendBtn.disabled = true;
-        userInput.disabled = true;
-
-        addMessage('user', text);
-        userInput.value = '';
-        showTyping();
-
-        try {
-            // استفاده از HuggingFace (رایگان، بدون کلید)
-            const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    inputs: `[INST] ${text} [/INST]`,
-                    parameters: { max_new_tokens: 250, temperature: 0.7, top_p: 0.9 }
-                })
-            });
-
-            const data = await response.json();
-            hideTyping();
-
-            if (data && data.generated_text) {
-                let reply = data.generated_text.replace(/\[INST\].*?\[\/INST\]/g, '').trim();
-                if (!reply) reply = 'پاسخی دریافت نشد.';
-                addMessage('ai', reply);
-            } else if (data.error) {
-                addMessage('ai', `⚠️ خطا: ${data.error}. لطفاً چند لحظه دیگر تلاش کنید.`);
-            } else {
-                addMessage('ai', '⚠️ پاسخی از سمت مدل دریافت نشد.');
-            }
-
-        } catch (error) {
-            hideTyping();
-            addMessage('ai', `⚠️ خطای ارتباط با سرور. لطفاً دوباره تلاش کنید. (${error.message})`);
-            console.error('Horizon Core Error:', error);
-        }
-
-        sendBtn.disabled = false;
-        userInput.disabled = false;
-        userInput.focus();
-    }
-
-    sendBtn.addEventListener('click', sendMessage);
-    userInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
-
-    timerDisplay.textContent = '∞';
-
-    setTimeout(() => {
-        addMessage('ai', '🔗 Horizon Core Engine به بلاکچین متصل است. همهٔ تراکنش‌ها روی زنجیره ثبت می‌شوند.');
-    }, 800);
-
-    console.log('🚀 Horizon Core Chat v0.1 — ready');
+  sendBtn.addEventListener("click", sendMessage);
+  userInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendMessage();
+  });
 </script>
 
 </body>
