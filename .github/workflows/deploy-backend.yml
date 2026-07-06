@@ -3,6 +3,9 @@ name: Deploy Horizon Backend (Auto)
 on:
   workflow_dispatch:  # Trigger manually from Actions tab
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
