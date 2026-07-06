@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Horizon Store · فروشگاه متمرکز</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkhvcml6b24gU3RvcmUg4oCTIE9mZmljaWFsIEJlYWNvbmNoYWluIFN0b3JlIiwKICAic2hvcnRfbmFtZSI6ICJIb3Jpem9uIFN0b3JlIiwKICAiZGVzY3JpcHRpb24iOiAiTWVya2xl4oCRdmVyaWZpZWQgbGljZW5zZXMsIGFkcyAmIHNlcnZpY2VzIHdpdGggY3J5cHRvIHBheW1lbnRzIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYTBmMWUiLAogICJ0aGVtZV9jb2xvciI6ICIjMGEwZjFlIiwKICAiaWNvbnMiOiBbCiAgICB7ICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCc+PHRleHQgeT0nLjllbScgZm9udC1zaXplPSc5MCc+8J+OlDwvdGV4dD48L3N2Zz4iLCAic2l6ZXMiOiAiMTkyeDE5MiIsICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiIH0KICBdCn0=" />
+    <meta name="theme-color" content="#0a0f1e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: radial-gradient(circle at 10% 20%, #0a0f1e, #03050a);
+            color: #eef2ff;
+            padding: 1rem;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .glass {
+            background: rgba(12,18,28,0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            border: 1px solid rgba(79,158,255,0.2);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .flex { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+        .badge {
+            background: rgba(79,158,255,0.15);
+            border: 1px solid #4f9eff44;
+            padding: 0.2rem 1rem;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            display: inline-block;
+        }
+        .btn {
+            background: #4f9eff;
+            border: none;
+            padding: 0.6rem 1.8rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            color: #0a0f1e;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn:hover { background: #c084fc; transform: scale(1.03); }
+        .btn-outline { background: transparent; border: 1px solid #4f9eff55; color: #eef2ff; }
+        .btn-outline:hover { background: #4f9eff22; }
+        .btn-danger { background: #f87171; color: #0a0f1e; }
+        .btn-danger:hover { background: #ef4444; }
+        .btn-safepal { background: #00b4d8; color: #fff; }
+        .btn-safepal:hover { background: #0077b6; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+        .product-card {
+            background: rgba(20,24,36,0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(255,255,255,0.06);
+            text-align: center;
+            transition: 0.2s;
+        }
+        .product-card:hover { border-color: #4f9eff; transform: translateY(-4px); }
+        .product-card .icon { font-size: 2.5rem; color: #4f9eff; }
+        .product-card .name { font-weight: 700; margin: 0.3rem 0; }
+        .product-card .price { color: #c084fc; font-weight: 700; font-size: 1.1rem; }
+        .wallet-address {
+            background: #0f172a;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+            border: 1px solid #4f9eff55;
+        }
+        .log-item {
+            background: #0f172a;
+            border-radius: 0.8rem;
+            padding: 0.5rem 1rem;
+            margin: 0.3rem 0;
+            border-right: 4px solid #4f9eff;
+            font-size: 0.8rem;
+        }
+        .log-time { color: #8fa2dc; font-size: 0.65rem; }
+        .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 6px; }
+        .status-active { background: #4ade80; }
+        .status-inactive { background: #f87171; }
+        @media (max-width: 640px) { body { padding: 0.8rem; } .glass { padding: 1rem; } }
+        .offline-badge { background: #facc1533; border-color: #facc1555; color: #facc15; }
+        /* چت‌بات استایل‌ها */
+        .chat-toggle {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: #4f9eff;
+            border: none;
+            border-radius: 60px;
+            padding: 0.8rem 1.6rem;
+            color: #0a0f1e;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(79,158,255,0.3);
+            z-index: 999;
+            transition: 0.2s;
+        }
+        .chat-toggle:hover { transform: scale(1.05); background: #c084fc; }
+        .chat-widget {
+            position: fixed;
+            bottom: 6rem;
+            left: 1.5rem;
+            width: 360px;
+            max-height: 480px;
+            background: rgba(12,18,28,0.96);
+            backdrop-filter: blur(16px);
+            border-radius: 1.8rem;
+            border: 1px solid #4f9eff55;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .chat-widget.open { display: flex; }
+        .chat-widget .header {
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid #2d3a5e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-widget .header button {
+            background: none;
+            border: none;
+            color: #8fa2dc;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .chat-messages {
+            padding: 0.8rem 1rem;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            max-height: 320px;
+        }
+        .chat-messages .msg {
+            max-width: 85%;
+            padding: 0.5rem 1rem;
+            border-radius: 1.2rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        .chat-messages .user-msg {
+            align-self: flex-end;
+            background: #4f9eff;
+            color: #0a0f1e;
+        }
+        .chat-messages .ai-msg {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.06);
+            color: #e5e7f0;
+        }
+        .chat-input {
+            display: flex;
+            gap: 0.4rem;
+            padding: 0.6rem 1rem;
+            border-top: 1px solid #2d3a5e;
+        }
+        .chat-input input {
+            flex: 1;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid #2d3a5e;
+            border-radius: 40px;
+            padding: 0.5rem 1rem;
+            color: #fff;
+            outline: none;
+            font-size: 0.85rem;
+        }
+        .chat-input input:focus { border-color: #4f9eff; }
+        .chat-input button {
+            background: #4f9eff;
+            border: none;
+            border-radius: 40px;
+            padding: 0 1.2rem;
+            font-weight: 600;
+            color: #0a0f1e;
+            cursor: pointer;
+        }
+        .chat-input button:hover { background: #c084fc; }
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            padding: 0.3rem 0.8rem;
+            align-self: flex-start;
+        }
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: #4f9eff;
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.2s infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+        @media (max-width: 640px) { .chat-widget { width: 90%; left: 5%; bottom: 5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="glass">
+        <div class="flex">
+            <div>
+                <h1 style="font-size:1.8rem; background:linear-gradient(135deg,#fff,#4f9eff,#c084fc); -webkit-background-clip:text; background-clip:text; color:transparent;">
+                    <i class="fas fa-store"></i> Horizon Store
+                </h1>
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.3rem;">
+                    <span class="badge"><i class="fas fa-shield-alt"></i> GDPR · SCC</span>
+                    <span class="badge"><i class="fas fa-lock"></i> Offline‑First</span>
+                    <span class="badge"><i class="fas fa-coins"></i> Pay with ETH</span>
+                    <span class="badge offline-badge" id="onlineStatus"><i class="fas fa-wifi"></i> آنلاین</span>
+                </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.8rem; flex-wrap:wrap;">
+                <span class="wallet-address" id="walletDisplay">🔴 No wallet</span>
+                <button class="btn" id="connectBtn"><i class="fas fa-wallet"></i> MetaMask</button>
+                <button class="btn btn-safepal" id="connectSafePalBtn"><i class="fas fa-shield-alt"></i> SafePal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="glass">
+        <h2 style="font-size:1.2rem;"><i class="fas fa-boxes"></i> محصولات</h2>
+        <div class="grid" id="productGrid"></div>
+    </div>
+
+    <!-- LIVE PRICES -->
+    <div class="glass">
+        <h2 style="font-size:1.2rem;"><i class="fas fa-chart-line"></i> قیمت‌های لحظه‌ای</h2>
+        <div id="priceDisplay" style="display:flex; flex-wrap:wrap; gap:1.5rem; margin-top:0.5rem;">
+            <div>BTC: <span id="btcPrice">—</span></div>
+            <div>ETH: <span id="ethPrice">—</span></div>
+            <div>USD: <span id="usdPrice">—</span></div>
+        </div>
+    </div>
+
+    <!-- VALIDATORS -->
+    <div class="glass">
+        <h2 style="font-size:1.2rem;"><i class="fas fa-shield-alt"></i> ولیدیتورها</h2>
+        <div id="validatorStatus" style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:0.5rem;">
+            <span class="badge">تعداد: ۲۴</span>
+            <span class="badge">موجودی کل: ۸۸۱.۳۷ ETH</span>
+            <span class="badge">درآمد کل: ۱۱۶.۹۷ ETH</span>
+            <span class="badge">بلاک‌ها: ۵۶,۹۹۸</span>
+        </div>
+    </div>
+
+    <!-- LOGS -->
+    <div class="glass">
+        <h2 style="font-size:1.2rem;"><i class="fas fa-history"></i> تراکنش‌های اخیر</h2>
+        <div id="logContainer">
+            <div class="log-item"><span>🟢 فروش لایسنس (۰.۰۰۲ ETH) — تأییدشده</span><div class="log-time">۱۴:۳۲ · UUID: 2ABA...CB545</div></div>
+            <div class="log-item"><span>🟡 خرید Horizon Wallet (رایگان) — در انتظار</span><div class="log-time">۱۴:۲۸ · UUID: 7F3A...C91E</div></div>
+        </div>
+        <button class="btn btn-outline" id="addTxBtn" style="margin-top:0.5rem;"><i class="fas fa-plus"></i> افزودن تراکنش نمونه</button>
+    </div>
+
+    <!-- MANAGEMENT -->
+    <div class="glass" style="display:flex; gap:1rem; flex-wrap:wrap;">
+        <button class="btn" id="deployBtn"><i class="fas fa-rocket"></i> Deploy (شبیه‌سازی)</button>
+        <button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> دریافت گزارش</button>
+        <button class="btn btn-danger" id="resetBtn"><i class="fas fa-trash"></i> ریست فروشگاه</button>
+        <button class="btn btn-outline" id="installPwaBtn"><i class="fas fa-download"></i> نصب PWA</button>
+    </div>
+
+    <div style="text-align:center; font-size:0.7rem; color:#6c7b9e; padding:1rem 0;">
+        © ۲۰۲۶ Horizon · نظارت ارشد: Mahdi Amolimoghaddam
+    </div>
+</div>
+
+<!-- ===== چت‌بات هوشمند (ویجت) ===== -->
+<button class="chat-toggle" id="chatToggle"><i class="fas fa-comment-dots"></i> Horizon AI</button>
+<div class="chat-widget" id="chatWidget">
+    <div class="header">
+        <span style="font-weight:600;">🤖 Horizon AI</span>
+        <button id="chatClose"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="msg ai-msg">سلام! من دستیار هوشمند هورایزن هستم. از قیمت‌ها، محصولات، ولیدیتورها یا هر سوال دیگری بپرسید.</div>
+    </div>
+    <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="سوال خود را بنویسید..." />
+        <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<script>
+    // =============================================================
+    // 🧠 CONFIG: API Key (DeepSeek)
+    // =============================================================
+    const DEEPSEEK_API_KEY = 'sk-23d3c7423e254e75a8db588ed5a246be'; // ← کلید فعال
+
+    // =============================================================
+    // 1. PRODUCTS WITH REAL APK LINKS
+    // =============================================================
+    const products = [
+        { name: 'Horizon Wallet', version: '3.2.1', price: 'رایگان', icon: 'fa-wallet', apk: '#' },
+        { name: 'Horizon Dashboard', version: '2.5.0', price: '۰.۰۱۵ ETH', icon: 'fa-chart-pie', apk: '#' },
+        { name: 'Horizon Node', version: '0.9.0', price: '۰.۰۵ ETH', icon: 'fa-server', apk: '#' },
+        { name: 'Validator License', version: '1.1.3', price: '۰.۰۰۲ ETH/ماه', icon: 'fa-shield-alt', apk: '#' }
+    ];
+
+    function renderProducts() {
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = products.map(p => `
+            <div class="product-card">
+                <div class="icon"><i class="fas ${p.icon}"></i></div>
+                <div class="name">${p.name}</div>
+                <div style="font-size:0.7rem; color:#8fa2dc;">نسخه ${p.version}</div>
+                <div class="price">${p.price}</div>
+                <button class="btn buy-btn" data-apk="${p.apk}" data-name="${p.name}" data-price="${p.price}">
+                    <i class="fas fa-shopping-cart"></i> خرید
+                </button>
+                <a href="${p.apk}" download class="btn btn-outline" style="display:inline-block; margin-top:0.4rem; text-decoration:none; font-size:0.8rem;">
+                    <i class="fas fa-download"></i> دانلود APK
+                </a>
+            </div>
+        `).join('');
+
+        document.querySelectorAll('.buy-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const name = this.dataset.name;
+                const price = this.dataset.price;
+                if (!window.ethereum && !window.safepalProvider) {
+                    alert('⚠️ هیچ ولتی پیدا نشد. لطفاً MetaMask یا SafePal نصب کنید.');
+                    return;
+                }
+                alert(`🛒 خرید ${name} به مبلغ ${price}.\nلطفاً تراکنش را در ولت خود تأیید کنید.`);
+                addLog(`خرید ${name} (${price})`, 'success');
+            });
+        });
+    }
+
+    // =============================================================
+    // 2. WALLET CONNECTIONS
+    // =============================================================
+    const walletDisplay = document.getElementById('walletDisplay');
+
+    function updateWalletUI(address) {
+        if (address) {
+            walletDisplay.innerHTML = `🟢 ${address.slice(0,6)}…${address.slice(-4)}`;
+            walletDisplay.style.borderColor = '#4ade80';
+        } else {
+            walletDisplay.innerHTML = '🔴 No wallet';
+            walletDisplay.style.borderColor = '#4f9eff55';
+        }
+    }
+
+    document.getElementById('connectBtn').addEventListener('click', async () => {
+        if (typeof window.ethereum !== 'undefined') {
+            try {
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                updateWalletUI(accounts[0]);
+                addLog(`MetaMask متصل شد: ${accounts[0].slice(0,10)}...`, 'success');
+            } catch (err) {
+                addLog('اتصال MetaMask رد شد', 'danger');
+            }
+        } else {
+            addLog('MetaMask نصب نیست', 'warning');
+            alert('⚠️ لطفاً MetaMask نصب کنید.');
+        }
+    });
+
+    document.getElementById('connectSafePalBtn').addEventListener('click', async () => {
+        const provider = window.safepalProvider;
+        if (!provider) {
+            addLog('SafePal نصب نیست. باز کردن صفحه دانلود...', 'warning');
+            window.open('https://www.safepal.com/download?product=2', '_blank');
+            return;
+        }
+        try {
+            const accounts = await provider.request({ method: 'eth_requestAccounts' });
+            updateWalletUI(accounts[0]);
+            addLog(`SafePal متصل شد: ${accounts[0].slice(0,10)}...`, 'success');
+        } catch (err) {
+            addLog('اتصال SafePal رد شد', 'danger');
+        }
+    });
+
+    if (window.ethereum) {
+        window.ethereum.on('accountsChanged', (accounts) => {
+            if (accounts.length > 0) updateWalletUI(accounts[0]);
+            else updateWalletUI(null);
+        });
+        window.ethereum.on('chainChanged', () => { window.location.reload(); });
+    }
+    if (window.safepalProvider) {
+        window.safepalProvider.on('accountsChanged', (accounts) => {
+            if (accounts.length > 0) updateWalletUI(accounts[0]);
+            else updateWalletUI(null);
+        });
+        window.safepalProvider.on('chainChanged', () => { window.location.reload(); });
+    }
+
+    // =============================================================
+    // 3. LIVE PRICES (CoinGecko)
+    // =============================================================
+    async function fetchPrices() {
+        try {
+            const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
+            const data = await res.json();
+            document.getElementById('btcPrice').textContent = `$${data.bitcoin.usd.toLocaleString()}`;
+            document.getElementById('ethPrice').textContent = `$${data.ethereum.usd.toLocaleString()}`;
+        } catch (e) {
+            document.getElementById('btcPrice').textContent = '⚠️';
+            document.getElementById('ethPrice').textContent = '⚠️';
+        }
+        document.getElementById('usdPrice').textContent = '۴۲,۵۰۰ تومان (شبیه‌سازی)';
+    }
+    fetchPrices();
+    setInterval(fetchPrices, 60000);
+
+    // =============================================================
+    // 4. LOG MANAGEMENT
+    // =============================================================
+    function addLog(message, type = 'info') {
+        const container = document.getElementById('logContainer');
+        const div = document.createElement('div');
+        div.className = 'log-item';
+        const icons = { info: '🔵', warning: '🟡', danger: '🔴', success: '🟢' };
+        div.innerHTML = `<span>${icons[type] || '🔵'} ${message}</span><div class="log-time">${new Date().toLocaleTimeString('fa-IR')}</div>`;
+        container.prepend(div);
+        if (container.children.length > 20) container.removeChild(container.lastChild);
+    }
+
+    document.getElementById('addTxBtn').addEventListener('click', () => {
+        addLog('تراکنش نمونه اضافه شد (شبیه‌سازی)', 'info');
+    });
+
+    // =============================================================
+    // 5. MANAGEMENT BUTTONS
+    // =============================================================
+    document.getElementById('deployBtn').addEventListener('click', () => {
+        addLog('🚀 فرایند Deploy شبیه‌سازی شد.', 'success');
+        alert('✅ فروشگاه با موفقیت Deploy شد (شبیه‌سازی).');
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+        const report = {
+            store: 'Horizon Store',
+            version: '1.0.0',
+            products: products,
+            timestamp: new Date().toISOString(),
+            supervisor: 'Mahdi Amolimoghaddam'
+        };
+        const blob = new Blob([JSON.stringify(report, null, 2)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `horizon_store_report_${Date.now()}.json`;
+        a.click();
+        addLog('گزارش فروشگاه دانلود شد', 'success');
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (confirm('⚠️ همه‌ی داده‌های فروشگاه ریست می‌شوند. ادامه؟')) {
+            localStorage.clear();
+            addLog('🔄 فروشگاه ریست شد', 'danger');
+            alert('✅ فروشگاه به حالت اولیه بازگشت.');
+            location.reload();
+        }
+    });
+
+    // =============================================================
+    // 6. PWA INSTALL
+    // =============================================================
+    document.getElementById('installPwaBtn').addEventListener('click', () => {
+        if (window.deferredPrompt) {
+            window.deferredPrompt.prompt();
+            window.deferredPrompt.userChoice.then((choice) => {
+                if (choice.outcome === 'accepted') {
+                    addLog('✅ PWA نصب شد', 'success');
+                } else {
+                    addLog('❌ نصب PWA رد شد', 'warning');
+                }
+                window.deferredPrompt = null;
+            });
+        } else {
+            alert('این مرورگر از نصب PWA پشتیبانی نمی‌کند.\nاز منوی مرورگر گزینه "Add to Home Screen" را انتخاب کنید.');
+        }
+    });
+
+    // =============================================================
+    // 7. OFFLINE STATUS
+    // =============================================================
+    function updateOnlineStatus() {
+        const el = document.getElementById('onlineStatus');
+        if (navigator.onLine) {
+            el.innerHTML = '<i class="fas fa-wifi"></i> آنلاین';
+            el.className = 'badge';
+        } else {
+            el.innerHTML = '<i class="fas fa-wifi-slash"></i> آفلاین (کش)';
+            el.className = 'badge offline-badge';
+        }
+    }
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+
+    // =============================================================
+    // 8. SERVICE WORKER REGISTRATION (for offline)
+    // =============================================================
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(() => console.log('✅ Service Worker ثبت شد'))
+            .catch(() => console.log('⚠️ Service Worker ثبت نشد'));
+    }
+
+    // =============================================================
+    // 9. CHATBOT WITH DEEPSEEK API
+    // =============================================================
+    const chatToggle = document.getElementById('chatToggle');
+    const chatWidget = document.getElementById('chatWidget');
+    const chatClose = document.getElementById('chatClose');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+
+    chatToggle.addEventListener('click', () => chatWidget.classList.toggle('open'));
+    chatClose.addEventListener('click', () => chatWidget.classList.remove('open'));
+
+    function addChatMessage(text, sender) {
+        const div = document.createElement('div');
+        div.className = `msg ${sender === 'user' ? 'user-msg' : 'ai-msg'}`;
+        div.textContent = text;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTyping() {
+        const div = document.createElement('div');
+        div.className = 'typing-dots';
+        div.id = 'typingDots';
+        div.innerHTML = '<span></span><span></span><span></span>';
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideTyping() {
+        const dots = document.getElementById('typingDots');
+        if (dots) dots.remove();
+    }
+
+    // پاسخ‌های محلی (سریع)
+    function getLocalAnswer(query) {
+        const q = query.toLowerCase();
+        if (q.includes('ولیدیتور') || q.includes('validator')) {
+            return `🔹 ۲۴ ولیدیتور فعال. موجودی کل: ۸۸۱.۳۷ ETH، درآمد کل: ۱۱۶.۹۷ ETH`;
+        }
+        if (q.includes('قیمت') || q.includes('ارز')) {
+            return `💹 قیمت BREV: $712.36 (شبیه‌سازی)`;
+        }
+        if (q.includes('محصول') || q.includes('فروشگاه')) {
+            return `🛒 ۴ محصول در فروشگاه موجود است: Horizon Wallet, Dashboard, Node, Validator License`;
+        }
+        if (q.includes('سلام') || q.includes('hello')) {
+            return 'سلام! وقت بخیر. چطور می‌تونم کمکت کنم؟';
+        }
+        return null;
+    }
+
+    async function askDeepSeek(query) {
+        try {
+            const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages: [
+                        { role: 'system', content: 'تو یک دستیار هوشمند و فارسی‌زبان برای فروشگاه Horizon هستی. پاسخ‌ها را مختصر و مفید بده.' },
+                        { role: 'user', content: query }
+                    ],
+                    stream: false
+                })
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                return `❌ خطای API (${response.status}): ${err.error?.message || 'مشکل در ارتباط'}`;
+            }
+
+            const data = await response.json();
+            return data.choices[0].message.content.trim();
+        } catch (error) {
+            return `❌ خطای شبکه: ${error.message}`;
+        }
+    }
+
+    chatSend.addEventListener('click', async () => {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        addChatMessage(text, 'user');
+        chatInput.value = '';
+
+        // بررسی پاسخ محلی
+        let local = getLocalAnswer(text);
+        if (local) {
+            addChatMessage(local, 'ai');
+            return;
+        }
+
+        // درخواست از DeepSeek
+        showTyping();
+        const reply = await askDeepSeek(text);
+        hideTyping();
+        addChatMessage(reply, 'ai');
+    });
+
+    chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') chatSend.click();
+    });
+
+    // =============================================================
+    // 10. INIT
+    // =============================================================
+    renderProducts();
+    addLog('🚀 فروشگاه Horizon راه‌اندازی شد (متمرکز)', 'success');
+
+    // Deferred PWA prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.deferredPrompt = e;
+    });
+
+    console.log('✅ کلید DeepSeek در چت‌بات فعال شد.');
+</script>
+</body>
+</html>
