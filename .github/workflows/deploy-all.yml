@@ -5,6 +5,10 @@ on:
     branches: [ main, master ]
   workflow_dispatch:  # اجرای دستی
 
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   deploy-all:
     runs-on: ubuntu-latest
