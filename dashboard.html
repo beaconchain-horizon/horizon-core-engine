@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد تحلیل اکوسیستم beaconchain-horizon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap');
+        body { font-family: 'Vazirmatn', sans-serif; background: #0f172a; }
+        .glass { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        .gradient-text { background: linear-gradient(135deg, #38bdf8, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-hover:hover { transform: translateY(-4px); transition: all 0.3s ease; box-shadow: 0 20px 40px -15px rgba(56, 189, 248, 0.2); }
+        .spinner { border: 3px solid rgba(255,255,255,0.1); border-radius: 50%; border-top: 3px solid #38bdf8; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="text-gray-200 p-6 min-h-screen">
+
+    <!-- هدر اصلی -->
+    <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 border-b border-gray-800 pb-4">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-black gradient-text">🔭 OSS Insight</h1>
+                <p class="text-gray-400 text-sm mt-1">تحلیل لحظه‌ای اکوسیستم <span class="text-cyan-400 font-bold">beaconchain-horizon</span></p>
+            </div>
+            <div class="mt-2 md:mt-0 flex items-center gap-3 text-xs bg-gray-800 px-4 py-2 rounded-full">
+                <i class="fas fa-database text-cyan-400"></i>
+                <span>داده‌ها از GitHub API</span>
+                <span class="w-1 h-1 bg-gray-600 rounded-full"></span>
+                <span id="update-time" class="text-gray-400">بارگذاری...</span>
+            </div>
+        </div>
+
+        <!-- بخش خلاصه وضعیت (کارت‌های اصلی) -->
+        <div id="summary-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <!-- کارت‌ها توسط جاوااسکریپت پر می‌شوند -->
+            <div class="glass rounded-2xl p-6 card-hover"><div class="spinner"></div></div>
+            <div class="glass rounded-2xl p-6 card-hover"><div class="spinner"></div></div>
+            <div class="glass rounded-2xl p-6 card-hover"><div class="spinner"></div></div>
+            <div class="glass rounded-2xl p-6 card-hover"><div class="spinner"></div></div>
+        </div>
+
+        <!-- جدول مخازن (مهم‌ترین بخش) -->
+        <div class="glass rounded-2xl p-6 card-hover">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-code-branch text-purple-400"></i> مخازن اصلی (Core Repos)</h2>
+                <span class="text-xs bg-gray-700 px-3 py-1 rounded-full" id="repo-count">۰ مخزن</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="border-b border-gray-700 text-gray-400">
+                        <tr>
+                            <th class="text-right py-3 px-2">نام مخزن</th>
+                            <th class="text-center py-3 px-2"><i class="fas fa-star"></i> ستاره</th>
+                            <th class="text-center py-3 px-2"><i class="fas fa-code-branch"></i> فورک</th>
+                            <th class="text-center py-3 px-2"><i class="fas fa-exclamation-triangle"></i> Issue</th>
+                            <th class="text-center py-3 px-2 hidden md:table-cell">زبان</th>
+                            <th class="text-left py-3 px-2 hidden lg:table-cell">آخرین بروزرسانی</th>
+                        </tr>
+                    </thead>
+                    <tbody id="repo-table-body">
+                        <!-- ردیف‌ها توسط جاوااسکریپت -->
+                        <tr><td colspan="6" class="text-center py-6 text-gray-500"><div class="spinner"></div> در حال دریافت لیست مخازن...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- فوتر -->
+        <div class="mt-8 text-center text-gray-600 text-xs border-t border-gray-800 pt-6">
+            ساخته شده بر اساس درخواست شما | داده‌ها به‌صورت زنده از گیت‌هاب دریافت می‌شوند
+        </div>
+    </div>
+
+    <script>
+        const ORG_NAME = 'beaconchain-horizon';
+        const API_BASE = `https://api.github.com/orgs/${ORG_NAME}`;
+
+        async function fetchData() {
+            try {
+                // دریافت اطلاعات سازمان
+                const orgRes = await fetch(API_BASE);
+                if (!orgRes.ok) throw new Error('سازمان یافت نشد');
+                const orgData = await orgRes.json();
+
+                // دریافت لیست مخازن (مرتب‌سازی بر اساس ستاره)
+                const reposRes = await fetch(`${API_BASE}/repos?per_page=100&sort=stars&direction=desc`);
+                const repos = await reposRes.json();
+                if (!Array.isArray(repos)) throw new Error('خطا در دریافت مخازن');
+
+                // بروزرسانی زمان
+                document.getElementById('update-time').innerHTML = `<i class="far fa-clock ml-1"></i> ${new Date().toLocaleString('fa-IR')}`;
+
+                // ۱. پر کردن کارت‌های خلاصه
+                const totalStars = repos.reduce((acc, r) => acc + r.stargazers_count, 0);
+                const totalForks = repos.reduce((acc, r) => acc + r.forks_count, 0);
+                const totalIssues = repos.reduce((acc, r) => acc + r.open_issues_count, 0);
+                const topLang = repos.length > 0 ? repos[0].language || 'نامشخص' : '-';
+
+                const cardsData = [
+                    { icon: 'fa-building', label: 'تعداد مخازن', value: repos.length, color: 'text-blue-400' },
+                    { icon: 'fa-star', label: 'مجموع ستاره‌ها', value: totalStars.toLocaleString(), color: 'text-yellow-400' },
+                    { icon: 'fa-code-fork', label: 'مجموع فورک‌ها', value: totalForks.toLocaleString(), color: 'text-green-400' },
+                    { icon: 'fa-code', label: 'زبان اصلی', value: topLang, color: 'text-purple-400' }
+                ];
+
+                const cardsContainer = document.getElementById('summary-cards');
+                cardsContainer.innerHTML = cardsData.map(item => `
+                    <div class="glass rounded-2xl p-6 card-hover flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-800/50 flex items-center justify-center text-2xl ${item.color}">
+                            <i class="fas ${item.icon}"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs">${item.label}</p>
+                            <p class="text-2xl font-bold text-white">${item.value}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+                // ۲. پر کردن جدول مخازن
+                const tableBody = document.getElementById('repo-table-body');
+                document.getElementById('repo-count').innerText = `${repos.length} مخزن`;
+
+                if (repos.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-gray-500">هیچ مخزنی یافت نشد</td></tr>`;
+                    return;
+                }
+
+                tableBody.innerHTML = repos.slice(0, 15).map(repo => `
+                    <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 transition">
+                        <td class="py-3 px-2 font-bold">
+                            <a href="${repo.html_url}" target="_blank" class="text-cyan-400 hover:underline flex items-center gap-2">
+                                <i class="fas fa-book-open text-xs text-gray-500"></i> ${repo.name}
+                            </a>
+                            <p class="text-gray-500 text-[10px] truncate max-w-xs">${repo.description || 'بدون توضیحات'}</p>
+                        </td>
+                        <td class="text-center py-3 px-2 text-yellow-400">${repo.stargazers_count}</td>
+                        <td class="text-center py-3 px-2 text-gray-300">${repo.forks_count}</td>
+                        <td class="text-center py-3 px-2 text-red-400">${repo.open_issues_count}</td>
+                        <td class="text-center py-3 px-2 hidden md:table-cell">
+                            <span class="bg-gray-700 px-2 py-1 rounded-full text-[10px]">${repo.language || 'N/A'}</span>
+                        </td>
+                        <td class="text-left py-3 px-2 hidden lg:table-cell text-gray-400 text-[10px]">
+                            ${new Date(repo.updated_at).toLocaleDateString('fa-IR')}
+                        </td>
+                    </tr>
+                `).join('');
+
+            } catch (error) {
+                document.getElementById('repo-table-body').innerHTML = `
+                    <tr><td colspan="6" class="text-center py-6 text-red-400">
+                        <i class="fas fa-exclamation-circle"></i> خطا: ${error.message || 'مشکل در اتصال به GitHub API'}
+                        <br><span class="text-gray-500 text-xs">ممکن است محدودیت درخواست (Rate Limit) رخ داده باشد.</span>
+                    </td></tr>
+                `;
+                document.getElementById('update-time').innerHTML = '❌ خطا در بارگذاری';
+                console.error(error);
+            }
+        }
+
+        // اجرا
+        fetchData();
+    </script>
+</body>
+</html>
